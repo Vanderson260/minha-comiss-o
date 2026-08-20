@@ -1,1 +1,3451 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Agenda - Cidade Soluções</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    padding: 24px;
+    color: #333;
+}
+.menu-inicial {
+    text-align: center;
+    padding: 40px 20px;
+}
+.menu-grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 30px;
+}
+.menu-card {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 15px;
+    padding: 30px;
+    width: 250px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+.menu-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    border-color: #667eea;
+}
+.menu-card i {
+    font-size: 40px;
+    margin-bottom: 15px;
+    color: #667eea;
+}
+.menu-card h3 {
+    color: #333;
+    font-size: 18px;
+}
+label {
+    display: block;
+    margin-top: 12px;
+    font-weight: bold;
+    color: #333;
+}
+input, select, textarea {
+    width: 100%;
+    padding: 12px 15px;
+    margin-top: 6px;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    color: #333;
+    box-sizing: border-box;
+    transition: all 0.3s;
+}
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+button {
+    margin-top: 12px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+.btn-success { background: linear-gradient(135deg, #28a745, #20c997); color: white; }
+.btn-warning { background: linear-gradient(135deg, #ffc107, #ff9800); color: white; }
+.btn-danger { background: linear-gradient(135deg, #dc3545, #ff6b6b); color: white; }
+.btn-secondary { background: linear-gradient(135deg, #6c757d, #495057); color: white; }
+.btn-info { background: linear-gradient(135deg, #17a2b8, #00bcd4); color: white; }
+.btn-filter { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+.btn-clear { background: linear-gradient(135deg, #95a5a6, #7f8c8d); color: white; }
+.btn-print { background: linear-gradient(135deg, #3498db, #2980b9); color: white; }
+.btn-fullscreen { background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; }
+.btn-view { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; }
+.btn-comissao { background: linear-gradient(135deg, #fd7e14, #e8590c); color: white; }
+.btn-modelos { background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; }
+.btn-ver-small {
+    background: #4a5568;
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin: 0;
+}
+.btn-ver-small:hover {
+    background: #2d3748;
+    transform: scale(1.05);
+}
+.event-list, .comissao-list, .modelos-list {
+    margin-top: 24px;
+}
+.event-item, .comissao-item, .modelo-item {
+    padding: 16px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border-left: 5px solid #e0e0e0;
+}
+.event-item.status-concluido { border-left-color: #28a745; }
+.event-item.status-em_andamento { border-left-color: #667eea; }
+.event-item.status-recusado { border-left-color: #dc3545; }
+.event-item.status-cabeca_molho { border-left-color: #6f42c1; }
+.event-item.status-Aguardando Peça { border-left-color: #ff9800; }
+.event-item.status-a_supervisao { border-left-color: #6c757d; }
+.event-item.status-a_aprovar { border-left-color: #17a2b8; }
+.comissao-item { border-left-color: #fd7e14; }
+.modelo-item { border-left-color: #9b59b6; }
+.event-actions, .comissao-actions, .modelo-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 5px;
+}
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+.modal.show {
+    display: flex !important;
+}
+.modal-content {
+    background: white;
+    width: 92%;
+    max-width: 700px;
+    border-radius: 15px;
+    padding: 24px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    max-height: 90vh;
+    overflow-y: auto;
+    color: #333;
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.modal-header h2 {
+    color: #667eea;
+}
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+}
+.filtros-section {
+    margin: 20px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #f0f4ff 0%, #e8ecff 100%);
+    border-radius: 12px;
+    border: 2px solid #667eea;
+}
+.filtros-section.comissao-filtros {
+    border-color: #fd7e14;
+    background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%);
+}
+.filtros-section.hidden {
+    display: none;
+}
+.filtros-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+.filtros-header h4 {
+    color: #667eea;
+    font-size: 16px;
+    font-weight: 600;
+}
+.filtros-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+.filtro-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.filtro-item label {
+    font-size: 13px;
+    color: #555;
+    margin: 0;
+}
+.filtro-item input, .filtro-item select {
+    padding: 10px 12px;
+    font-size: 14px;
+}
+.filtros-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    justify-content: flex-end;
+}
+.filtros-actions button {
+    padding: 10px 20px;
+    font-size: 14px;
+}
+.status-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+.status-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.status-checkbox-item:hover {
+    border-color: #667eea;
+}
+.status-checkbox-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    margin: 0;
+}
+.status-checkbox-item span {
+    font-size: 13px;
+    color: #333;
+}
+.status-checkbox-item.checked {
+    background: #667eea;
+    border-color: #667eea;
+}
+.status-checkbox-item.checked span {
+    color: white;
+}
+.servicos-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 15px;
+}
+.servicos-title-row label {
+    margin-top: 0;
+}
+.novo-servico-box {
+    display: none;
+    margin-top: 12px;
+    padding: 14px;
+    background: #fff8ef;
+    border: 2px dashed #fd7e14;
+    border-radius: 10px;
+}
+.novo-servico-box.show {
+    display: block;
+}
+.novo-servico-grid {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 10px;
+}
+.resumo-comissao {
+    margin: 30px auto 0;
+    max-width: 1200px;
+    padding: 25px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    border: 2px solid #dee2e6;
+}
+.resumo-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #dee2e6;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.resumo-header h3 {
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+}
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+.card-resumo {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-left: 4px solid #667eea;
+    transition: all 0.3s;
+}
+.card-resumo:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+.card-resumo.consertada { border-left-color: #28a745; }
+.card-resumo.reparo { border-left-color: #ffc107; }
+.card-resumo.almofada { border-left-color: #dc3545; }
+.card-resumo.total { border-left-color: #667eea; }
+.card-resumo.valor { border-left-color: #fd7e14; }
+.card-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+.card-label {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+.card-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+.card-subtitle {
+    font-size: 11px;
+    color: #999;
+    margin-top: 5px;
+}
+.pendencias-section {
+    margin: 30px auto 0;
+    max-width: 800px;
+    padding: 25px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    border: 2px solid #dee2e6;
+    text-align: left;
+}
+.pendencias-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #dee2e6;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.pendencias-header h3 {
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+}
+.pendencias-header .badge-total {
+    background: #667eea;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+.status-cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.status-card-item {
+    background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%);
+    border: 2px solid #ffd699;
+    border-radius: 12px;
+    padding: 15px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+.status-card-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+.status-card-item.em_andamento {
+    background: linear-gradient(135deg, #e6f3ff 0%, #cce5ff 100%);
+    border-color: #3399ff;
+}
+.status-card-item.recusado {
+    background: linear-gradient(135deg, #ffe6f0 0%, #ffccdd 100%);
+    border-color: #cc3399;
+}
+.status-card-item.cabeca_molho {
+    background: linear-gradient(135deg, #ffe6ff 0%, #ffccff 100%);
+    border-color: #cc33cc;
+}
+.status-card-item.Aguardando Peça {
+    background: linear-gradient(135deg, #fff0e6 0%, #ffe0cc 100%);
+    border-color: #ff6633;
+}
+.status-card-item.a_aprovar {
+    background: linear-gradient(135deg, #fff9e6 0%, #fff0cc 100%);
+    border-color: #ffcc66;
+}
+.status-card-item.a_supervisao {
+    background: linear-gradient(135deg, #e8e8e8 0%, #d0d0d0 100%);
+    border-color: #999999;
+}
+.status-card-item.concluido {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-color: #28a745;
+}
+.status-card-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+.status-icon {
+    font-size: 20px;
+    width: 30px;
+    text-align: center;
+}
+.status-name {
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+.status-badges {
+    display: flex;
+    gap: 5px;
+}
+.status-badge-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.status-card-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.action-text {
+    font-size: 13px;
+    color: #333;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.count-number {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+    min-width: 20px;
+    text-align: right;
+}
+.pendencias-detalhadas {
+    margin-top: 20px;
+    display: none;
+}
+.pendencias-detalhadas.show {
+    display: block;
+}
+.pendencia-item-detail {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-left: 4px solid #ff9800;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.pendencia-item-detail.status-em_andamento { border-left-color: #667eea; }
+.pendencia-item-detail.status-recusado { border-left-color: #dc3545; }
+.pendencia-item-detail.status-cabeca_molho { border-left-color: #6f42c1; }
+.pendencia-item-detail.status-Aguardando Peça { border-left-color: #ff9800; }
+.pendencia-item-detail.status-concluido { border-left-color: #28a745; }
+.pendencia-item-detail.status-a_supervisao { border-left-color: #6c757d; }
+.pendencia-item-detail.status-a_aprovar { border-left-color: #17a2b8; }
+.pendencia-header-detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.pendencia-os-detail {
+    font-weight: bold;
+    color: #333;
+}
+.pendencia-status-badge {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+}
+.pendencia-desc-detail {
+    color: #555;
+    font-size: 13px;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+.pendencia-actions-detail {
+    display: flex;
+    gap: 8px;
+}
+.empty-message {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+    font-size: 14px;
+}
+.empty-emoji {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+.modal-fullscreen {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    z-index: 2000;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    overflow-y: auto;
+}
+.modal-fullscreen.show {
+    display: flex !important;
+}
+.modal-fs-content {
+    background: white;
+    width: 100%;
+    max-width: 1200px;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    margin-top: 20px;
+    color: #333;
+    position: relative;
+}
+.modal-fs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+.modal-fs-header h2 {
+    color: #333;
+    font-size: 22px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.modal-fs-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.modal-fs-actions button {
+    padding: 10px 20px;
+    font-size: 14px;
+}
+.close-modal-fs {
+    background: #dc3545;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+.close-modal-fs:hover {
+    background: #c82333;
+    transform: scale(1.1);
+}
+.image-upload-area {
+    border: 2px dashed #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+}
+.image-upload-area:hover {
+    border-color: #667eea;
+    background: #f8f9fa;
+}
+.image-upload-icon {
+    font-size: 48px;
+    color: #667eea;
+    margin-bottom: 10px;
+}
+.image-upload-area p {
+    color: #666;
+    font-size: 14px;
+}
+.image-preview-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+.image-item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.image-item img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    display: block;
+}
+.remove-image {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(220, 53, 69, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    z-index: 10;
+}
+.hidden { display: none; }
+.text-muted { color: #666; font-size: 14px; }
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+}
+.status-concluido-bg { background: #28a745; }
+.status-em_andamento-bg { background: #667eea; }
+.status-recusado-bg { background: #dc3545; }
+.status-cabeca_molho-bg { background: #6f42c1; }
+.status-Aguardando Peça-bg { background: #ff9800; }
+.status-a_supervisao-bg { background: #6c757d; }
+.status-a_aprovar-bg { background: #17a2b8; }
+.comissao-servicos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+.comissao-servico-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #28a745;
+    border: 2px solid #28a745;
+    border-radius: 8px;
+    font-size: 13px;
+    color: white;
+}
+.comissao-valor {
+    font-size: 18px;
+    font-weight: bold;
+    color: #28a745;
+}
+.comissao-mes {
+    font-size: 14px;
+    color: #667eea;
+    font-weight: 600;
+}
+.autocomplete-wrapper {
+    position: relative;
+}
+.autocomplete-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 2px solid #667eea;
+    border-radius: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    display: none;
+}
+.autocomplete-list.show {
+    display: block;
+}
+.autocomplete-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.2s;
+}
+.autocomplete-item:hover {
+    background: #667eea;
+    color: white;
+}
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+.modelo-valor-display {
+    font-size: 12px;
+    color: #28a745;
+    font-weight: 600;
+}
+.historico-section {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+}
+.historico-section h3 {
+    color: #667eea;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+.historico-item {
+    background: white;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    border-left: 4px solid #667eea;
+    position: relative;
+}
+.historico-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.historico-item-date {
+    font-weight: bold;
+    color: #667eea;
+    font-size: 13px;
+}
+.historico-item-desc {
+    color: #555;
+    font-size: 13px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+}
+.historico-item-actions {
+    display: flex;
+    gap: 5px;
+}
+.historico-empty {
+    text-align: center;
+    color: #999;
+    padding: 20px;
+    font-style: italic;
+}
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #a1a1a1; }
+.status-manager-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+.status-manager-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+.status-manager-item:last-child {
+    border-bottom: none;
+}
+.status-color-preview {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+}
+input[type="color"] {
+    width: 50px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+}
+
+/* ============================================ */
+/* CSS DE IMPRESSÃO - SEM PÁGINAS EM BRANCO */
+/* ============================================ */
+@media print {
+    @page { 
+        margin: 1.5cm; 
+        size: A4; 
+    }
+    html, body {
+        height: auto !important;
+        overflow: visible !important;
+        background: white !important;
+        color: #000;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        margin: 0;
+        padding: 0;
+    }
+    body * { 
+        visibility: hidden; 
+        height: 0;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+    /* Esconder tudo exceto a área de impressão ativa */
+    #printArea, #printArea *, 
+    #printAreaAgenda, #printAreaAgenda * { 
+        visibility: visible; 
+        height: auto;
+        margin: auto;
+        padding: auto;
+        overflow: visible;
+    }
+    #printArea {
+        position: relative;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        background: white !important;
+        color: #000;
+        display: none;
+    }
+    #printAreaAgenda {
+        position: relative;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        background: white !important;
+        color: #000;
+        display: none;
+    }
+    #printArea.show, #printAreaAgenda.show {
+        display: block !important;
+    }
+    .no-print { 
+        display: none !important; 
+    }
+    .print-header {
+        text-align: center;
+        border-bottom: 3px solid #28a745;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+        page-break-after: avoid;
+    }
+    .print-header h1 {
+        color: #333;
+        margin: 0;
+        font-size: 24px;
+        text-transform: uppercase;
+    }
+    .print-header p {
+        color: #666;
+        margin: 5px 0 0;
+        font-size: 14px;
+    }
+    .print-info-box {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 25px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+        page-break-inside: avoid;
+    }
+    .print-info-item {
+        flex: 1;
+        min-width: 200px;
+    }
+    .print-info-label {
+        font-size: 12px;
+        color: #888;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+    .print-info-value {
+        font-size: 16px;
+        color: #333;
+        font-weight: 600;
+    }
+    .print-tabela-servicos {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+        page-break-inside: auto;
+    }
+    .print-tabela-servicos tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+    }
+    .print-tabela-servicos thead {
+        display: table-header-group;
+    }
+    .print-tabela-servicos th {
+        background: #28a745;
+        color: white;
+        padding: 12px;
+        text-align: left;
+        font-size: 14px;
+    }
+    .print-tabela-servicos td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+        color: #555;
+        font-size: 14px;
+    }
+    .print-col-valor {
+        text-align: right;
+        font-weight: bold;
+        color: #28a745;
+    }
+    .print-col-obs {
+        color: #555;
+        max-width: 220px;
+        white-space: pre-wrap;
+        word-break: break-word;
+        line-height: 1.4;
+    }
+    .print-col-servicos {
+        line-height: 1.7;
+        white-space: normal;
+    }
+    .print-total-box {
+        background: #28a745;
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: right;
+        margin-top: 20px;
+        page-break-inside: avoid;
+    }
+    .print-total-label {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+    .print-total-valor {
+        font-size: 32px;
+        font-weight: bold;
+    }
+    .print-footer {
+        margin-top: 50px;
+        text-align: center;
+        border-top: 1px solid #ddd;
+        padding-top: 20px;
+        color: #999;
+        font-size: 12px;
+        page-break-inside: avoid;
+    }
+    .print-tabela-servicos tr {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+    }
+    .print-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .print-item {
+        padding: 20px;
+        border: 2px solid #ddd;
+        border-radius: 12px;
+        border-left: 5px solid #667eea;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+        background: #fafafa;
+    }
+    .print-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+    .print-item-os {
+        font-weight: bold;
+        color: #333;
+        font-size: 18px;
+    }
+    .print-item-status {
+        padding: 5px 15px;
+        border-radius: 15px;
+        font-size: 13px;
+        font-weight: 600;
+        color: white;
+    }
+    .print-item-desc {
+        color: #555;
+        font-size: 15px;
+        line-height: 1.6;
+        margin-bottom: 10px;
+    }
+    .print-item-date {
+        color: #888;
+        font-size: 13px;
+    }
+    .print-item-single {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .print-historico-container {
+        margin-top: 20px;
+        border-top: 2px dashed #ddd;
+        padding-top: 20px;
+        page-break-inside: avoid;
+    }
+    .print-historico-title {
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+    }
+    .print-historico-item {
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+    }
+    .print-historico-item:last-child {
+        margin-bottom: 0;
+    }
+    .print-historico-date {
+        font-weight: bold;
+        color: #667eea;
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+    .print-historico-text {
+        font-size: 14px;
+        color: #333;
+        line-height: 1.5;
+        white-space: pre-wrap;
+    }
+}
+
+/* Áreas de impressão escondidas por padrão */
+#printArea { 
+    display: none; 
+    background: white !important; 
+}
+#printArea.show { 
+    display: block; 
+}
+#printAreaAgenda { 
+    display: none; 
+    background: white !important; 
+}
+#printAreaAgenda.show { 
+    display: block; 
+}
+
+@media (max-width: 768px) {
+    .menu-grid { flex-direction: column; align-items: center; }
+    .filtros-grid { grid-template-columns: 1fr; }
+    .status-checkboxes { flex-direction: column; }
+    .cards-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div id="menuPrincipal" class="menu-inicial">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Montserrat&display=swap" rel="stylesheet">
+            <div style="display:inline-block; padding: 14px 34px; border-radius: 16px; background: white; border: 2px solid #667eea; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);">
+                <span style="display: block; font-family: 'Montserrat', sans-serif; font-size: 11px; letter-spacing: 4px; color: #667eea;">Versão V-2.2.5</span>
+                <h1 style="margin: 0; font-family: 'Alex Brush', cursive; font-size: 58px; color: #333;">Sistema de Comissão</h1>
+            </div>
+        </div>
+        <p style="color: #666; margin-top: 10px;">Selecione uma opção abaixo:</p>
+        <div class="menu-grid">
+            <div class="menu-card" onclick="mostrarTela('agenda')"><i>📅</i><h3>Ver Agenda</h3></div>
+            <div class="menu-card" onclick="mostrarTela('comissao')"><i>💰</i><h3>Comissão</h3></div>
+            <div class="menu-card" onclick="fazerBackup()"><i>💾</i><h3>Backup</h3></div>
+            <div class="menu-card" onclick="document.getElementById('inputRestaurar').click()"><i>📥</i><h3>Restaurar</h3><input type="file" id="inputRestaurar" style="display: none;" accept=".json" onchange="restaurarBackup(this)"></div>
+        </div>
+        
+        <div class="resumo-comissao">
+            <div class="resumo-header">
+                <h3>💰 Resumo da Comissão - <span id="mesAtual">Fevereiro 2026</span></h3>
+                <button class="btn-comissao btn-sm" onclick="mostrarTela('comissao')">Ver Detalhes →</button>
+            </div>
+            <div class="cards-grid">
+                <div class="card-resumo total"><div class="card-icon">🖨️</div><div class="card-label">Total de Equipamentos</div><div class="card-value" id="totalEquipamentos">0</div><div class="card-subtitle">Cadastrados no mês</div></div>
+                <div class="card-resumo consertada"><div class="card-icon">✅</div><div class="card-label">Consertadas</div><div class="card-value" id="totalConsertadas">0</div><div class="card-subtitle">Equipamentos consertados</div></div>
+                <div class="card-resumo reparo"><div class="card-icon">🔧</div><div class="card-label">Reparos de Peça</div><div class="card-value" id="totalReparos">0</div><div class="card-subtitle">Reparos realizados</div></div>
+                <div class="card-resumo almofada"><div class="card-icon">🧽</div><div class="card-label">Troca de Almofada</div><div class="card-value" id="totalAlmofadas">0</div><div class="card-subtitle">Almofadas trocadas</div></div>
+                <div class="card-resumo valor"><div class="card-icon">💵</div><div class="card-label">Valor da Comissão</div><div class="card-value" id="valorComissao">R$ 0,00</div><div class="card-subtitle">Total do mês</div></div>
+            </div>
+        </div>
+        
+        <div class="pendencias-section">
+            <div class="pendencias-header">
+                <h3>⚠️ Pendências por Situação</h3>
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <span class="badge-total" id="totalPendenciasBadge">0 pendências</span>
+                    <button class="btn-fullscreen" onclick="abrirModalPendencias()">🖥️ Tela Cheia</button>
+                </div>
+            </div>
+            <div class="status-cards-container" id="statusCardsContainer"></div>
+            <div class="pendencias-detalhadas" id="pendenciasDetalhadas">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                    <h3 style="color: #333; font-size: 16px;" id="tituloListaDetalhada">Pendências</h3>
+                    <button class="btn-print" onclick="imprimirSelecionado()">🖨️ Imprimir</button>
+                </div>
+                <div id="listaPendenciasDetalhadas"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="telaAgenda" class="hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="color: #667eea; font-size: 18px;">📅 Agenda de Eventos</h2>
+            <button class="btn-secondary" onclick="mostrarTela('menu')" style="margin: 0;">⬅ Voltar</button>
+        </div>
+        
+        <div class="filtros-section">
+            <div class="filtros-header"><h4>🔍 Filtros de Pesquisa</h4></div>
+            <div class="filtros-grid">
+                <div class="filtro-item"><label>📝 Buscar por texto:</label><input type="text" id="filtroTextoAgenda" placeholder="Digite para buscar..." onkeyup="aplicarFiltrosAgenda()"></div>
+                <div class="filtro-item"><label>📅 Data Início:</label><input type="date" id="filtroDataInicioAgenda" onchange="aplicarFiltrosAgenda()"></div>
+                <div class="filtro-item"><label>📅 Data Fim:</label><input type="date" id="filtroDataFimAgenda" onchange="aplicarFiltrosAgenda()"></div>
+            </div>
+            <div class="filtro-item" style="margin-top: 15px;">
+                <label>📊 Situações:</label>
+                <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                    <button class="btn-modelos btn-sm" onclick="abrirModalGerenciarStatus()">⚙️ Gerenciar Situações</button>
+                </div>
+                <div class="status-checkboxes" id="statusCheckboxesAgenda"></div>
+            </div>
+            <div class="filtros-actions">
+                <button class="btn-clear" onclick="limparFiltrosAgenda()">🗑️ Limpar Filtros</button>
+                <button class="btn-filter" onclick="aplicarFiltrosAgenda()">✅ Aplicar Filtros</button>
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+            <button class="btn-success" onclick="abrirModalEvento()">➕ Novo Evento</button>
+            <button class="btn-print" onclick="imprimirAgendaFiltrada()">🖨️ Imprimir Agenda</button>
+            <input type="text" id="searchAgenda" placeholder="Pesquisar por OS..." style="flex: 1; min-width: 200px;" onkeyup="filtrarAgenda()">
+        </div>
+        
+        <div class="event-list" id="listaEventos"></div>
+    </div>
+
+    <div id="telaComissao" class="hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="color: #fd7e14; font-size: 18px;">💰 Comissão - Máquinas e Serviços</h2>
+            <button class="btn-secondary" onclick="mostrarTela('menu')" style="margin: 0;">⬅ Voltar</button>
+        </div>
+        
+        <div class="filtros-section comissao-filtros">
+            <div class="filtros-header"><h4 style="color: #fd7e14;">🔍 Filtros de Pesquisa</h4></div>
+            <div class="filtros-grid">
+                <div class="filtro-item"><label>📝 Buscar por OS ou Modelo:</label><input type="text" id="filtroTextoComissao" placeholder="Digite para buscar..." onkeyup="aplicarFiltrosComissao()"></div>
+                <div class="filtro-item"><label>📅 Mês/Ano de Referência:</label><input type="month" id="filtroMesAnoComissao" onchange="aplicarFiltrosComissao()"></div>
+            </div>
+            <div class="filtros-actions">
+                <button class="btn-clear" onclick="limparFiltrosComissao()">🗑️ Limpar Filtros</button>
+                <button class="btn-filter" onclick="aplicarFiltrosComissao()" style="background: linear-gradient(135deg, #fd7e14, #e8590c);">✅ Aplicar Filtros</button>
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+            <button class="btn-comissao" onclick="abrirModalComissao()">➕ Nova Máquina</button>
+            <button class="btn-modelos" onclick="mostrarTela('modelos')">📋 Ver Modelos</button>
+            <button class="btn-print" onclick="imprimirComissao()">🖨️ Imprimir Relatório</button>
+            <input type="text" id="searchComissao" placeholder="Pesquisar..." style="flex: 1; min-width: 200px;" onkeyup="filtrarComissao()">
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+            <span style="font-weight: 600; color: #333;">📊 Total de Registros: <span id="totalComissao" style="color: #fd7e14;">0</span></span>
+            <span style="font-weight: 600; color: #333;">💰 Valor Total: <span id="valorTotalComissao" style="color: #28a745;">R$ 0,00</span></span>
+        </div>
+        
+        <div class="comissao-list" id="listaComissao"></div>
+    </div>
+
+    <div id="telaModelos" class="hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="color: #9b59b6; font-size: 18px;">📋 Catálogo de Modelos</h2>
+            <button class="btn-secondary" onclick="mostrarTela('comissao')" style="margin: 0;">⬅ Voltar</button>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+            <button class="btn-modelos" onclick="abrirModalModelo()">➕ Novo Modelo</button>
+            <input type="text" id="searchModelos" placeholder="Pesquisar modelo..." style="flex: 1; min-width: 200px;" onkeyup="filtrarModelos()">
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+            <span style="font-weight: 600; color: #333;">📊 Total de Modelos: <span id="totalModelos" style="color: #9b59b6;">0</span></span>
+        </div>
+        
+        <div class="modelos-list" id="listaModelos"></div>
+    </div>
+</div>
+
+<!-- MODAL DE EVENTO -->
+<div id="modalEvento" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalEventoTitulo">Novo Evento</h2>
+            <button class="close-modal" onclick="fecharModalEvento()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="eventoId">
+            <label>Ordem de Serviço (OS):</label>
+            <input type="text" id="eventoOS" placeholder="Ex: 22539">
+            <label>📅 Data/Hora:</label>
+            <input type="datetime-local" id="eventoDataHora">
+            <label>Descrição:</label>
+            <textarea id="eventoDesc" rows="4" placeholder="Descreva o andamento..."></textarea>
+            <label>Status:</label>
+            <select id="eventoStatus"></select>
+            <label>Anexar Imagens (Máx. 8):</label>
+            <div class="image-upload-area" id="imageUploadArea">
+                <div class="image-upload-icon">📷</div>
+                <p>Clique para adicionar imagens</p>
+                <input type="file" id="imageInput" multiple accept="image/*" style="display: none;">
+            </div>
+            <div class="image-preview-container" id="imagePreviewContainer"></div>
+            <div id="imageCounter" style="margin-top: 10px; text-align: center; color: #666; font-size: 14px;"></div>
+            
+            <!-- SEÇÃO DE HISTÓRICO DE ATUALIZAÇÕES -->
+            <div class="historico-section" id="historicoSection" style="display: none;">
+                <h3>📜 Histórico de Atualizações</h3>
+                <div id="historicoLista"></div>
+                <hr style="margin: 15px 0; border: none; border-top: 1px solid #ddd;">
+                <label>Nova Atualização:</label>
+                <textarea id="novaAtualizacaoDesc" rows="3" placeholder="Digite a nova atualização..."></textarea>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button type="button" class="btn-info btn-sm" onclick="adicionarAtualizacao()">➕ Adicionar Atualização</button>
+                </div>
+            </div>
+        </div>
+        <div style="padding: 20px; text-align: right; display: flex; gap: 10px; justify-content: flex-end;">
+            <button class="btn-secondary" onclick="fecharModalEvento()">Cancelar</button>
+            <button class="btn-view" id="btnVisualizarImagens" onclick="visualizarImagens()" style="display: none;">👁️ Visualizar</button>
+            <button class="btn-success" id="btnSalvarEvento" onclick="salvarEvento()">💾 Salvar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE COMISSÃO -->
+<div id="modalComissao" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalComissaoTitulo">Nova Máquina</h2>
+            <button class="close-modal" onclick="fecharModalComissao()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="comissaoId">
+            <label>Ordem de Serviço (OS):</label>
+            <input type="text" id="comissaoOS" placeholder="Ex: 22539">
+            <label>Modelo da Máquina:</label>
+            <div class="autocomplete-wrapper">
+                <input type="text" id="comissaoModelo" placeholder="Digite o modelo..." onkeyup="buscarModelosAutocomplete()" autocomplete="off">
+                <div class="autocomplete-list" id="modeloAutocompleteList"></div>
+            </div>
+            <label>Categoria:</label>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <select id="comissaoCategoria" style="flex: 1;"></select>
+                <button type="button" class="btn-modelos btn-sm" onclick="abrirModalGerenciarCategorias()" title="Gerenciar Categorias" style="margin:0; white-space: nowrap;">⚙️ Categorias</button>
+            </div>
+            <label>Valor da Comissão (R$):</label>
+            <input type="number" id="comissaoValor" placeholder="0.00" step="0.01" min="0">
+            <label>📅 Mês/Ano de Referência:</label>
+            <input type="month" id="comissaoMesAno">
+            <div class="servicos-title-row">
+                <label>🔧 Serviços Realizados (Selecione):</label>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <button class="btn-info btn-sm" onclick="abrirCriarServico()" style="margin:0;">➕ Criar serviço</button>
+                    <button class="btn-modelos btn-sm" onclick="abrirModalGerenciarServicos()" style="margin:0;">⚙️ Gerenciar</button>
+                </div>
+            </div>
+            <div class="status-checkboxes" id="servicosCheckboxes"></div>
+            <div class="novo-servico-box" id="novoServicoBox">
+                <div class="novo-servico-grid">
+                    <div>
+                        <label>Tipo:</label>
+                        <select id="novoServicoIcone">
+                            <option value="🔧">🔧 Serviço/Reparo</option>
+                            <option value="✅">✅ Concluído</option>
+                            <option value="⚙️">⚙️ Peça</option>
+                            <option value="🧽">🧽 Limpeza/Troca</option>
+                            <option value="🖨️">🖨️ Impressora</option>
+                            <option value="💧">💧 Tinta</option>
+                            <option value="🧰">🧰 Manutenção</option>
+                            <option value="📌">📌 Outro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Nome do serviço:</label>
+                        <input type="text" id="novoServicoNome" placeholder="Ex: Troca de cabeça, limpeza, reset...">
+                    </div>
+                </div>
+                <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:10px;">
+                    <button class="btn-secondary btn-sm" onclick="cancelarCriarServico()">Cancelar</button>
+                    <button class="btn-success btn-sm" onclick="salvarNovoServico()">Salvar serviço</button>
+                </div>
+            </div>
+            <label>Observações:</label>
+            <textarea id="comissaoObs" rows="3" placeholder="Observações adicionais..."></textarea>
+        </div>
+        <div style="padding: 20px; text-align: right; display: flex; gap: 10px; justify-content: flex-end;">
+            <button class="btn-secondary" onclick="fecharModalComissao()">Cancelar</button>
+            <button class="btn-comissao" id="btnSalvarComissao" onclick="salvarComissao()">💾 Salvar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE MODELO -->
+<div id="modalModelo" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalModeloTitulo">Novo Modelo</h2>
+            <button class="close-modal" onclick="fecharModalModelo()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="modeloId">
+            <label>Nome do Modelo:</label>
+            <input type="text" id="modeloNome" placeholder="Ex: Epson L3110">
+            <label>Valor da Comissão (R$):</label>
+            <input type="number" id="modeloValor" placeholder="0.00" step="0.01" min="0">
+            <label>Categoria:</label>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <select id="modeloCategoria" style="flex: 1;"></select>
+                <button type="button" class="btn-modelos btn-sm" onclick="abrirModalGerenciarCategorias()" title="Gerenciar Categorias" style="margin:0; white-space: nowrap;">⚙️ Categorias</button>
+            </div>
+            <label>Observações:</label>
+            <textarea id="modeloObs" rows="3" placeholder="Observações sobre o modelo..."></textarea>
+        </div>
+        <div style="padding: 20px; text-align: right; display: flex; gap: 10px; justify-content: flex-end;">
+            <button class="btn-secondary" onclick="fecharModalModelo()">Cancelar</button>
+            <button class="btn-modelos" id="btnSalvarModelo" onclick="salvarModelo()">💾 Salvar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL GERENCIAR SERVIÇOS -->
+<div id="modalGerenciarServicos" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>🔧 Gerenciar Serviços</h2>
+            <button class="close-modal" onclick="fecharModalGerenciarServicos()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <label>Serviços Existentes (editar ícone/nome ou excluir):</label>
+            <div class="status-manager-list" id="listaServicosGerenciar"></div>
+            <p style="font-size: 12px; color: #666; margin-top: 10px;">⚠️ Excluir um serviço não remove ele dos registros já salvos — apenas retira da lista de seleção.</p>
+        </div>
+        <div style="padding: 20px; text-align: right;">
+            <button class="btn-secondary" onclick="fecharModalGerenciarServicos()">Fechar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL GERENCIAR CATEGORIAS -->
+<div id="modalGerenciarCategorias" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>📦 Gerenciar Categorias</h2>
+            <button class="close-modal" onclick="fecharModalGerenciarCategorias()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <label>Adicionar Nova Categoria:</label>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;">
+                <div style="flex: 2; min-width: 160px;">
+                    <label style="font-size: 12px; margin: 0 0 5px 0;">Nome:</label>
+                    <input type="text" id="novaCategoriaNome" placeholder="Ex: Notebook">
+                </div>
+                <div style="flex: 1; min-width: 120px;">
+                    <label style="font-size: 12px; margin: 0 0 5px 0;">Ícone:</label>
+                    <input type="text" id="novaCategoriaIcone" placeholder="Ex: 💻" maxlength="4">
+                </div>
+                <button class="btn-success" onclick="adicionarNovaCategoria()">➕ Adicionar</button>
+            </div>
+            <label style="margin-top: 15px;">Ícones sugeridos (clique para usar):</label>
+            <div id="sugestoesIconesCategoria" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px;">
+                <button type="button" class="btn-secondary btn-sm" style="margin:0;" onclick="document.getElementById('novaCategoriaIcone').value='🖨️'">🖨️ Impressora</button>
+                <button type="button" class="btn-secondary btn-sm" style="margin:0;" onclick="document.getElementById('novaCategoriaIcone').value='📱'">📱 Celular</button>
+                <button type="button" class="btn-secondary btn-sm" style="margin:0;" onclick="document.getElementById('novaCategoriaIcone').value='🔋'">🔋 Nobreak</button>
+                <button type="button" class="btn-secondary btn-sm" style="margin:0;" onclick="document.getElementById('novaCategoriaIcone').value='💻'">💻 Notebook</button>
+                <button type="button" class="btn-secondary btn-sm" style="margin:0;" onclick="document.getElementById('novaCategoriaIcone').value='🖥️'">🖥️ Computador</button>
+                <button type="button" class="btn-secondary btn-sm" style="margin:0;" onclick="document.getElementById('novaCategoriaIcone').value='📺'">📺 TV</button>
+                <button type="button" class="btn-secondary btn-sm" style="margin:0;" onclick="document.getElementById('novaCategoriaIcone').value='🎮'">🎮 Videogame</button>
+                <button type="button" class="btn-secondary btn-sm" style="margin:0;" onclick="document.getElementById('novaCategoriaIcone').value='📷'">📷 Câmera</button>
+                <button type="button" class="btn-secondary btn-sm" style="margin:0;" onclick="document.getElementById('novaCategoriaIcone').value='⌨️'">⌨️ Teclado</button>
+                <button type="button" class="btn-secondary btn-sm" style="margin:0;" onclick="document.getElementById('novaCategoriaIcone').value='🖱️'">🖱️ Mouse</button>
+                <button type="button" class="btn-secondary btn-sm" style="margin:0;" onclick="document.getElementById('novaCategoriaIcone').value='🔊'">🔊 Som</button>
+                <button type="button" class="btn-secondary btn-sm" style="margin:0;" onclick="document.getElementById('novaCategoriaIcone').value='📡'">📡 Roteador</button>
+                <button type="button" class="btn-secondary btn-sm" style="margin:0;" onclick="document.getElementById('novaCategoriaIcone').value='🛠️'">🛠️ Outros</button>
+            </div>
+            <label>Categorias Existentes:</label>
+            <div class="status-manager-list" id="listaCategoriasGerenciar"></div>
+            <p style="font-size: 12px; color: #666; margin-top: 10px;">⚠️ Alterar/excluir categorias afeta os modelos e registros que a utilizam.</p>
+        </div>
+        <div style="padding: 20px; text-align: right;">
+            <button class="btn-secondary" onclick="fecharModalGerenciarCategorias()">Fechar</button>
+        </div>
+    </div>
+</div>
+
+<div id="modalVisualizarImagens" class="modal">
+    <div class="modal-content" style="max-width: 900px;">
+        <div class="modal-header"><h2>📷 Visualizar Imagens</h2><button class="close-modal" onclick="fecharModalVisualizarImagens()">&times;</button></div>
+        <div class="image-preview-container" id="imageVisualizarContainer" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));"></div>
+    </div>
+</div>
+
+<div id="modalPendencias" class="modal-fullscreen">
+    <div class="modal-fs-content">
+        <div class="modal-fs-header">
+            <h2>⚠️ Pendências da Agenda - Tela Cheia</h2>
+            <div class="modal-fs-actions">
+                <button class="btn-print" onclick="imprimirSelecionado()">🖨️ Imprimir</button>
+                <button class="close-modal-fs" onclick="fecharModalPendencias()" title="Fechar">&times;</button>
+            </div>
+        </div>
+        <div class="status-cards-container" id="statusCardsContainerFS"></div>
+        <div class="pendencias-detalhadas" id="pendenciasDetalhadasFS">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                <h3 style="color: #333; font-size: 18px;" id="tituloListaDetalhadaFS">Pendências</h3>
+                <button class="btn-print" onclick="imprimirSelecionado()">🖨️ Imprimir</button>
+            </div>
+            <div id="listaPendenciasDetalhadasFS"></div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL GERENCIAR SITUAÇÕES -->
+<div id="modalGerenciarStatus" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>⚙️ Gerenciar Situações</h2>
+            <button class="close-modal" onclick="fecharModalGerenciarStatus()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <label>Adicionar Nova Situação:</label>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;">
+                <div style="flex: 2;">
+                    <input type="text" id="novoStatusNome" placeholder="Nome da Situação (Ex: Em Análise)">
+                </div>
+                <div style="flex: 1;">
+                    <label style="font-size: 12px; margin: 0 0 5px 0;">Cor:</label>
+                    <input type="color" id="novoStatusCor" value="#667eea" style="width: 100%; height: 42px;">
+                </div>
+                <button class="btn-success" onclick="adicionarNovaSituacao()">➕ Adicionar</button>
+            </div>
+            <label style="margin-top: 20px;">Situações Existentes:</label>
+            <div class="status-manager-list" id="listaStatusGerenciar"></div>
+            <p style="font-size: 12px; color: #666; margin-top: 10px;">⚠️ Atenção: Alterar cores ou nomes afetará todos os eventos existentes com essa situação.</p>
+        </div>
+        <div style="padding: 20px; text-align: right;">
+            <button class="btn-secondary" onclick="fecharModalGerenciarStatus()">Fechar</button>
+        </div>
+    </div>
+</div>
+
+<!-- ÁREA DE IMPRESSÃO - RELATÓRIO DE COMISSÃO -->
+<div id="printArea">
+    <div class="print-header">
+        <h1 id="printTitulo">💰 Relatório de Comissão</h1>
+        <p id="printSubtitulo">Cidade Soluções</p>
+    </div>
+    <div class="print-info-box">
+        <div class="print-info-item">
+            <div class="print-info-label">Período</div>
+            <div class="print-info-value" id="printPeriodo">-</div>
+        </div>
+        <div class="print-info-item">
+            <div class="print-info-label">Total de Serviços</div>
+            <div class="print-info-value" id="printTotalServicos">0 máquinas</div>
+        </div>
+        <div class="print-info-item">
+            <div class="print-info-label">Data Emissão</div>
+            <div class="print-info-value" id="printDataEmissao">-</div>
+        </div>
+    </div>
+    <table class="print-tabela-servicos">
+        <thead>
+            <tr>
+                <th>OS</th>
+                <th>Modelo</th>
+                <th>Categoria</th>
+                <th>Serviços</th>
+                <th class="print-col-valor">Valor</th>
+                <th>Observações</th>
+            </tr>
+        </thead>
+        <tbody id="printTabelaBody"></tbody>
+    </table>
+    <div class="print-list" id="printLista"></div>
+    <div class="print-total-box" id="printTotalBox" style="display: none;">
+        <div class="print-total-label">💰 VALOR TOTAL DA COMISSÃO</div>
+        <div class="print-total-valor" id="printValorTotal">R$ 0,00</div>
+    </div>
+    <div class="print-footer">
+        <p>Gerado em <span id="printFooterData"></span> | Sistema de Comissão - Cidade Soluções</p>
+    </div>
+</div>
+
+<!-- COMPROVANTE INDIVIDUAL DE AGENDA -->
+<div id="printAreaAgenda">
+    <div class="print-header">
+        <h1 id="printAgendaTitulo">📅 Comprovante de Agenda</h1>
+        <p id="printAgendaSubtitulo">Cidade Soluções - Técnico Vanderson Canedo</p>
+    </div>
+    <div class="print-info-box">
+        <div class="print-info-item">
+            <div class="print-info-label">Ordem de Serviço (OS)</div>
+            <div class="print-info-value" id="printAgendaOS">-</div>
+        </div>
+        <div class="print-info-item">
+            <div class="print-info-label">Data/Hora</div>
+            <div class="print-info-value" id="printAgendaDataHora">-</div>
+        </div>
+        <div class="print-info-item">
+            <div class="print-info-label">Status</div>
+            <div class="print-info-value" id="printAgendaStatus">-</div>
+        </div>
+        <div class="print-info-item">
+            <div class="print-info-label">Data Emissão</div>
+            <div class="print-info-value" id="printAgendaEmissao">-</div>
+        </div>
+    </div>
+    <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
+        <div class="print-info-label" style="margin-bottom: 10px;">📝 DESCRIÇÃO DO SERVIÇO</div>
+        <div id="printAgendaDescricao" style="color: #333; font-size: 15px; line-height: 1.6;"></div>
+    </div>
+    <div class="print-historico-container" id="printHistoricoContainer" style="display: none;">
+        <div class="print-historico-title">📜 HISTÓRICO DE ATUALIZAÇÕES</div>
+        <div id="printHistoricoLista"></div>
+    </div>
+    <div class="print-footer">
+        <p>Gerado em <span id="printAgendaFooterData"></span> | Sistema de Agenda - Cidade Soluções</p>
+    </div>
+</div>
+
+<script>
+const dadosIniciaisHTML = `<div class="event-item" data-situacao="concluido" data-anexos="[]"><div style="display:flex; align-items:flex-start; gap:10px; width:100%;"><div style="flex:1;"><strong>22539 Foi feito a tentativa de desentupimento da cabeça de impressão, porem apresentam pequenas falhas, indicio de tinta não original, ver se o cliente aceita desta forma, se não aceitar é troca da cabeça e das tintas, tanque preto, limpeza e lubrificação. Aguardando a autorização do cliente.</strong><br><small class="text-muted">📅 30/12/2025 17:27 | 🟢 Concluído</small></div></div></div>`;
+
+let eventos = [];
+let comissoes = [];
+let modelos = [];
+let statusAtualFiltro = null;
+let imageFiles = [];
+let existingAttachments = [];
+const LIMITE_ANEXOS = 8;
+let filtrosAtivos = { texto: '', dataInicio: '', dataFim: '', status: [] };
+let filtrosAtivosAgenda = { texto: '', dataInicio: '', dataFim: '', status: [] };
+let filtrosAtivosComissao = { texto: '', mesAno: '' };
+let mesAnoAtualComissao = '';
+let statusConfig = {};
+
+const statusConfigPadrao = {
+    'a_supervisao': { nome: 'Aguardando o Wagner', icone: '🕐', cor: '#6c757d', classe: 'a_supervisao' },
+    'em_andamento': { nome: 'Em Andamento', icone: '⌛', cor: '#3399ff', classe: 'em_andamento' },
+    'recusado': { nome: 'Recusado', icone: '❌', cor: '#cc3399', classe: 'recusado' },
+    'cabeca_molho': { nome: 'Cabeça de Molho', icone: '🔮', cor: '#cc33cc', classe: 'cabeca_molho' },
+    'Aguardando Peça': { nome: 'Aguardando Peça', icone: '⚠️', cor: '#ff6633', classe: 'Aguardando Peça' },
+    'a_aprovar': { nome: 'A.Aprovar', icone: '👤', cor: '#ffcc66', classe: 'a_aprovar' },
+    'concluido': { nome: 'Concluído', icone: '✅', cor: '#28a745', classe: 'concluido' }
+};
+
+const categoriasConfigPadrao = {
+    'impressora': { nome: 'Impressora', icone: '🖨️' },
+    'celular': { nome: 'Celular', icone: '📱' },
+    'nobreak': { nome: 'Nobreak', icone: '🔋' }
+};
+let categoriasConfig = {};
+
+const servicosConfigPadrao = {
+    'consertada': { nome: 'Consertada', icone: '✅' },
+    'reparo_peca': { nome: 'Reparo de Peça', icone: '🔧' },
+    'troca_almofada': { nome: 'Troca de Almofada', icone: '🧽' },
+    'atualizacao_firmware': { nome: 'Atualização de Firmware', icone: '🔧' }
+};
+let servicosConfig = {};
+
+document.addEventListener('DOMContentLoaded', function() {
+    carregarDados();
+    carregarCategoriasConfig();
+    carregarServicosConfig();
+    carregarStatusConfig();
+    renderizarSelectCategoria();
+    renderizarCheckboxesServicos();
+    renderizarEventos();
+    renderizarCardsPendencias();
+    renderizarCheckboxesStatus();
+    renderizarSelectStatus();
+    atualizarResumoComissao();
+    
+    const hoje = new Date();
+    mesAnoAtualComissao = hoje.toISOString().slice(0, 7);
+    document.getElementById('comissaoMesAno').value = mesAnoAtualComissao;
+    document.getElementById('filtroMesAnoComissao').value = mesAnoAtualComissao;
+    filtrosAtivosComissao.mesAno = mesAnoAtualComissao;
+    
+    document.getElementById('imageUploadArea').addEventListener('click', function(e) {
+        if (e.target !== document.getElementById('imageInput')) {
+            document.getElementById('imageInput').click();
+        }
+    });
+    
+    document.getElementById('imageInput').addEventListener('change', handleImageUpload);
+    
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.autocomplete-wrapper')) {
+            document.getElementById('modeloAutocompleteList').classList.remove('show');
+        }
+    });
+});
+
+function carregarStatusConfig() {
+    const savedConfig = localStorage.getItem('agendaStatusConfigData');
+    if (savedConfig) {
+        statusConfig = JSON.parse(savedConfig);
+    } else {
+        statusConfig = JSON.parse(JSON.stringify(statusConfigPadrao));
+        salvarStatusConfig();
+    }
+    if(filtrosAtivos.status.length === 0) {
+        filtrosAtivos.status = Object.keys(statusConfig);
+    }
+    if(filtrosAtivosAgenda.status.length === 0) {
+        filtrosAtivosAgenda.status = Object.keys(statusConfig);
+    }
+}
+
+function salvarStatusConfig() {
+    localStorage.setItem('agendaStatusConfigData', JSON.stringify(statusConfig));
+    renderizarCheckboxesStatus();
+    renderizarSelectStatus();
+    renderizarCardsPendencias();
+    renderizarEventos();
+}
+
+function carregarServicosConfig() {
+    const savedConfig = localStorage.getItem('agendaServicosConfigData');
+    if (savedConfig) {
+        try {
+            servicosConfig = Object.assign({}, servicosConfigPadrao, JSON.parse(savedConfig));
+        } catch (e) {
+            servicosConfig = Object.assign({}, servicosConfigPadrao);
+        }
+    } else {
+        servicosConfig = Object.assign({}, servicosConfigPadrao);
+    }
+}
+
+function carregarCategoriasConfig() {
+    const saved = localStorage.getItem('agendaCategoriasConfigData');
+    if (saved) {
+        try {
+            categoriasConfig = JSON.parse(saved);
+            if (!categoriasConfig || typeof categoriasConfig !== 'object' || Object.keys(categoriasConfig).length === 0) {
+                categoriasConfig = JSON.parse(JSON.stringify(categoriasConfigPadrao));
+            }
+        } catch (e) {
+            categoriasConfig = JSON.parse(JSON.stringify(categoriasConfigPadrao));
+        }
+    } else {
+        categoriasConfig = JSON.parse(JSON.stringify(categoriasConfigPadrao));
+        salvarCategoriasConfig();
+    }
+}
+
+function salvarCategoriasConfig() {
+    localStorage.setItem('agendaCategoriasConfigData', JSON.stringify(categoriasConfig));
+}
+
+function normalizarChaveCategoria(nome) {
+    return String(nome || '').toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '_')
+        .replace(/^_+|_+$/g, '') || 'categoria';
+}
+
+function obterCategoriaConfig(chave) {
+    if(chave && categoriasConfig[chave]) return categoriasConfig[chave];
+    // tentativa de match case-insensitive por chave normalizada
+    const alvo = normalizarChaveCategoria(chave);
+    for(const k in categoriasConfig) {
+        if(normalizarChaveCategoria(k) === alvo) return categoriasConfig[k];
+    }
+    return { nome: chave || 'Geral', icone: '📦' };
+}
+
+function formatarCategoriaTexto(chave) {
+    if(!chave) return '📦 Geral';
+    const cfg = obterCategoriaConfig(chave);
+    return (cfg.icone ? cfg.icone + ' ' : '') + cfg.nome;
+}
+
+function renderizarSelectCategoria() {
+    ['modeloCategoria', 'comissaoCategoria'].forEach(id => {
+        const sel = document.getElementById(id);
+        if(!sel) return;
+        const valorAtual = sel.value;
+        sel.innerHTML = '';
+        Object.keys(categoriasConfig).forEach(k => {
+            const opt = document.createElement('option');
+            opt.value = k;
+            opt.textContent = (categoriasConfig[k].icone ? categoriasConfig[k].icone + ' ' : '') + categoriasConfig[k].nome;
+            sel.appendChild(opt);
+        });
+        if(valorAtual && categoriasConfig[valorAtual]) {
+            sel.value = valorAtual;
+        }
+    });
+}
+
+function abrirModalGerenciarCategorias() {
+    document.getElementById('novaCategoriaNome').value = '';
+    document.getElementById('novaCategoriaIcone').value = '';
+    renderizarListaCategoriasGerenciar();
+    document.getElementById('modalGerenciarCategorias').classList.add('show');
+}
+
+function fecharModalGerenciarCategorias() {
+    document.getElementById('modalGerenciarCategorias').classList.remove('show');
+}
+
+function renderizarListaCategoriasGerenciar() {
+    const lista = document.getElementById('listaCategoriasGerenciar');
+    if(!lista) return;
+    lista.innerHTML = '';
+    const chaves = Object.keys(categoriasConfig);
+    if(chaves.length === 0) {
+        lista.innerHTML = '<p style="text-align:center; color:#999; padding:10px;">Nenhuma categoria cadastrada.</p>';
+        return;
+    }
+    chaves.forEach(chave => {
+        const cfg = categoriasConfig[chave];
+        const row = document.createElement('div');
+        row.style.cssText = 'display:flex; gap:8px; align-items:center; padding:8px; border:1px solid #eee; border-radius:6px; margin-bottom:6px; flex-wrap:wrap;';
+        row.innerHTML =
+            '<input type="text" value="' + escapeHtml(cfg.icone || '') + '" maxlength="4" style="width:60px; text-align:center;" onchange="editarCategoria(\'' + escapeHtml(chave) + '\', \'icone\', this.value)">' +
+            '<input type="text" value="' + escapeHtml(cfg.nome || '') + '" style="flex:1; min-width:120px;" onchange="editarCategoria(\'' + escapeHtml(chave) + '\', \'nome\', this.value)">' +
+            '<button class="btn-danger btn-sm" style="margin:0;" onclick="excluirCategoria(\'' + escapeHtml(chave) + '\')">🗑️ Excluir</button>';
+        lista.appendChild(row);
+    });
+}
+
+function adicionarNovaCategoria() {
+    const nome = (document.getElementById('novaCategoriaNome').value || '').trim();
+    const icone = (document.getElementById('novaCategoriaIcone').value || '').trim() || '📦';
+    if(!nome) {
+        alert('⚠️ Informe o nome da categoria.');
+        return;
+    }
+    const chave = normalizarChaveCategoria(nome);
+    if(categoriasConfig[chave]) {
+        alert('⚠️ Já existe uma categoria com esse nome.');
+        return;
+    }
+    categoriasConfig[chave] = { nome: nome, icone: icone };
+    salvarCategoriasConfig();
+    document.getElementById('novaCategoriaNome').value = '';
+    document.getElementById('novaCategoriaIcone').value = '';
+    renderizarListaCategoriasGerenciar();
+    renderizarSelectCategoria();
+    renderizarModelos();
+    renderizarComissoes();
+}
+
+function editarCategoria(chave, campo, valor) {
+    if(!categoriasConfig[chave]) return;
+    const v = (valor || '').trim();
+    if(campo === 'nome') {
+        if(!v) { alert('⚠️ Nome não pode ficar vazio.'); renderizarListaCategoriasGerenciar(); return; }
+        categoriasConfig[chave].nome = v;
+    } else if(campo === 'icone') {
+        categoriasConfig[chave].icone = v || '📦';
+    }
+    salvarCategoriasConfig();
+    renderizarSelectCategoria();
+    renderizarModelos();
+    renderizarComissoes();
+}
+
+function excluirCategoria(chave) {
+    if(!categoriasConfig[chave]) return;
+    if(Object.keys(categoriasConfig).length <= 1) {
+        alert('⚠️ Mantenha pelo menos uma categoria.');
+        return;
+    }
+    if(!confirm('Excluir a categoria "' + categoriasConfig[chave].nome + '"?')) return;
+    delete categoriasConfig[chave];
+    salvarCategoriasConfig();
+    renderizarListaCategoriasGerenciar();
+    renderizarSelectCategoria();
+    renderizarModelos();
+    renderizarComissoes();
+}
+
+function salvarServicosConfig() {
+    localStorage.setItem('agendaServicosConfigData', JSON.stringify(servicosConfig));
+    renderizarComissoes();
+}
+
+function obterServicoConfig(chave) {
+    if(servicosConfig[chave]) return servicosConfig[chave];
+    if(chave === '🔧Atualização de Firmware') {
+        return { nome: 'Atualização de Firmware', icone: '🔧' };
+    }
+    return { nome: chave || 'Serviço', icone: '🔧' };
+}
+
+function formatarServicoTexto(chave) {
+    const config = obterServicoConfig(chave);
+    return (config.icone ? config.icone + ' ' : '') + config.nome;
+}
+
+function normalizarChaveServico(nome) {
+    return nome.toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '_')
+        .replace(/^_+|_+$/g, '') || 'servico';
+}
+
+function renderizarCheckboxesServicos(selecionados) {
+    const container = document.getElementById('servicosCheckboxes');
+    if(!container) return;
+    if(!selecionados) selecionados = getServicosSelecionados();
+    container.innerHTML = '';
+    
+    selecionados.forEach(chave => {
+        if(chave && !servicosConfig[chave]) {
+            servicosConfig[chave] = obterServicoConfig(chave);
+        }
+    });
+    
+    Object.keys(servicosConfig).forEach(chave => {
+        const config = servicosConfig[chave];
+        const isChecked = selecionados.includes(chave);
+        const label = document.createElement('label');
+        label.className = 'status-checkbox-item' + (isChecked ? ' checked' : '');
+        label.onclick = function() { toggleServicoCheckbox(this); };
+        label.innerHTML = '<input type="checkbox" value="' + escapeHtml(chave) + '" ' + (isChecked ? 'checked' : '') + '><span>' + escapeHtml(config.icone + ' ' + config.nome) + '</span>';
+        container.appendChild(label);
+    });
+}
+
+function abrirCriarServico() {
+    const box = document.getElementById('novoServicoBox');
+    box.classList.add('show');
+    document.getElementById('novoServicoNome').focus();
+}
+
+function cancelarCriarServico() {
+    document.getElementById('novoServicoBox').classList.remove('show');
+    document.getElementById('novoServicoNome').value = '';
+    document.getElementById('novoServicoIcone').value = '🔧';
+}
+
+function salvarNovoServico() {
+    const nomeInput = document.getElementById('novoServicoNome');
+    const nome = nomeInput.value.trim();
+    const icone = document.getElementById('novoServicoIcone').value;
+    if(!nome) {
+        alert('⚠️ Digite o nome do serviço');
+        nomeInput.focus();
+        return;
+    }
+    
+    const existente = Object.keys(servicosConfig).find(chave => servicosConfig[chave].nome.toLowerCase() === nome.toLowerCase());
+    const selecionados = getServicosSelecionados();
+    if(existente) {
+        if(!selecionados.includes(existente)) selecionados.push(existente);
+        renderizarCheckboxesServicos(selecionados);
+        cancelarCriarServico();
+        alert('✅ Esse serviço já existia e foi selecionado.');
+        return;
+    }
+    
+    let chave = normalizarChaveServico(nome);
+    let contador = 2;
+    while(servicosConfig[chave]) {
+        chave = normalizarChaveServico(nome) + '_' + contador;
+        contador++;
+    }
+    
+    servicosConfig[chave] = { nome: nome, icone: icone };
+    salvarServicosConfig();
+    selecionados.push(chave);
+    renderizarCheckboxesServicos(selecionados);
+    cancelarCriarServico();
+    alert('✅ Serviço criado com sucesso!');
+}
+
+function abrirModalGerenciarServicos() {
+    renderizarListaServicosGerenciar();
+    document.getElementById('modalGerenciarServicos').classList.add('show');
+}
+
+function fecharModalGerenciarServicos() {
+    document.getElementById('modalGerenciarServicos').classList.remove('show');
+}
+
+function renderizarListaServicosGerenciar() {
+    const lista = document.getElementById('listaServicosGerenciar');
+    if(!lista) return;
+    lista.innerHTML = '';
+    const chaves = Object.keys(servicosConfig);
+    if(chaves.length === 0) {
+        lista.innerHTML = '<p style="text-align:center; color:#999; padding:10px;">Nenhum serviço cadastrado.</p>';
+        return;
+    }
+    chaves.forEach(chave => {
+        const cfg = servicosConfig[chave];
+        const row = document.createElement('div');
+        row.style.cssText = 'display:flex; gap:8px; align-items:center; padding:8px; border:1px solid #eee; border-radius:6px; margin-bottom:6px; flex-wrap:wrap;';
+        row.innerHTML =
+            '<input type="text" value="' + escapeHtml(cfg.icone || '') + '" maxlength="4" style="width:60px; text-align:center;" onchange="editarServico(\'' + escapeHtml(chave) + '\', \'icone\', this.value)">' +
+            '<input type="text" value="' + escapeHtml(cfg.nome || '') + '" style="flex:1; min-width:120px;" onchange="editarServico(\'' + escapeHtml(chave) + '\', \'nome\', this.value)">' +
+            '<button class="btn-danger btn-sm" style="margin:0;" onclick="excluirServico(\'' + escapeHtml(chave) + '\')">🗑️ Excluir</button>';
+        lista.appendChild(row);
+    });
+}
+
+function editarServico(chave, campo, valor) {
+    if(!servicosConfig[chave]) return;
+    const v = (valor || '').trim();
+    if(campo === 'nome') {
+        if(!v) { alert('⚠️ Nome não pode ficar vazio.'); renderizarListaServicosGerenciar(); return; }
+        servicosConfig[chave].nome = v;
+    } else if(campo === 'icone') {
+        servicosConfig[chave].icone = v || '🔧';
+    }
+    salvarServicosConfig();
+    renderizarCheckboxesServicos();
+    renderizarComissoes();
+}
+
+function excluirServico(chave) {
+    if(!servicosConfig[chave]) return;
+    if(!confirm('Excluir o serviço "' + servicosConfig[chave].nome + '"?\n\n(Isso não remove o serviço dos registros já salvos.)')) return;
+    delete servicosConfig[chave];
+    salvarServicosConfig();
+    renderizarListaServicosGerenciar();
+    const selecionadosAtuais = (typeof getServicosSelecionados === 'function' ? getServicosSelecionados() : []).filter(s => s !== chave);
+    renderizarCheckboxesServicos(selecionadosAtuais);
+    renderizarComissoes();
+}
+
+function mostrarTela(tela) {
+    document.getElementById('menuPrincipal').classList.add('hidden');
+    document.getElementById('telaAgenda').classList.add('hidden');
+    document.getElementById('telaComissao').classList.add('hidden');
+    document.getElementById('telaModelos').classList.add('hidden');
+    
+    if(tela === 'menu') {
+        document.getElementById('menuPrincipal').classList.remove('hidden');
+        renderizarCardsPendencias();
+        atualizarResumoComissao();
+    } else if(tela === 'agenda') {
+        document.getElementById('telaAgenda').classList.remove('hidden');
+        renderizarEventos();
+    } else if(tela === 'comissao') {
+        document.getElementById('telaComissao').classList.remove('hidden');
+        renderizarComissoes();
+    } else if(tela === 'modelos') {
+        document.getElementById('telaModelos').classList.remove('hidden');
+        renderizarModelos();
+    }
+}
+
+function carregarDados() {
+    const dadosSalvos = localStorage.getItem('agendaEventosData');
+    const comissaoSalva = localStorage.getItem('agendaComissaoData');
+    const modelosSalvos = localStorage.getItem('agendaModelosData');
+    
+    if (dadosSalvos) {
+        eventos = JSON.parse(dadosSalvos);
+        eventos.forEach(ev => {
+            if(!ev.historico) {
+                ev.historico = [];
+                if(ev.dataTexto && ev.descricao) {
+                    ev.historico.push({
+                        data: ev.dataTexto,
+                        descricao: ev.descricao
+                    });
+                }
+            }
+        });
+    } else {
+        migrarDadosAntigos();
+    }
+    
+    if (comissaoSalva) {
+        comissoes = JSON.parse(comissaoSalva);
+    }
+    if (modelosSalvos) {
+        modelos = JSON.parse(modelosSalvos);
+    }
+}
+
+function salvarDados() {
+    localStorage.setItem('agendaEventosData', JSON.stringify(eventos));
+    renderizarEventos();
+    renderizarCardsPendencias();
+}
+
+function salvarDadosComissao() {
+    localStorage.setItem('agendaComissaoData', JSON.stringify(comissoes));
+    renderizarComissoes();
+    atualizarResumoComissao();
+}
+
+function salvarDadosModelos() {
+    localStorage.setItem('agendaModelosData', JSON.stringify(modelos));
+    renderizarModelos();
+}
+
+function migrarDadosAntigos() {
+    try {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(dadosIniciaisHTML, 'text/html');
+        const items = doc.querySelectorAll('.event-item');
+        eventos = Array.from(items).map((item, index) => {
+            const strong = item.querySelector('strong');
+            const small = item.querySelector('small');
+            const texto = strong ? strong.textContent : '';
+            const dataHora = small ? small.textContent : '';
+            const osMatch = texto.match(/^\d+/);
+            const dataTexto = dataHora.replace(/.*\|\s*/, '').trim();
+            const descricao = texto.replace(/^\d+\s*/, '');
+            return {
+                id: Date.now() + index,
+                os: osMatch ? osMatch[0] : '0000',
+                descricao: descricao,
+                dataTexto: dataTexto,
+                status: 'concluido',
+                anexos: [],
+                historico: [{
+                    data: dataTexto,
+                    descricao: descricao
+                }]
+            };
+        });
+        salvarDados();
+    } catch (e) {
+        console.error("Erro na migração", e);
+        eventos = [];
+    }
+}
+
+function atualizarResumoComissao() {
+    const hoje = new Date();
+    const mesAnoAtual = hoje.toISOString().slice(0, 7);
+    const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    document.getElementById('mesAtual').textContent = meses[hoje.getMonth()] + ' ' + hoje.getFullYear();
+    
+    const comissoesDoMes = comissoes.filter(c => c.mesAno === mesAnoAtual);
+    const totalEquipamentos = comissoesDoMes.length;
+    const totalConsertadas = comissoesDoMes.filter(c => c.servicos && c.servicos.includes('consertada')).length;
+    const totalReparos = comissoesDoMes.filter(c => c.servicos && c.servicos.includes('reparo_peca')).length;
+    const totalAlmofadas = comissoesDoMes.filter(c => c.servicos && c.servicos.includes('troca_almofada')).length;
+    const valorTotal = comissoesDoMes.reduce((sum, c) => sum + (parseFloat(c.valor) || 0), 0);
+    
+    document.getElementById('totalEquipamentos').textContent = totalEquipamentos;
+    document.getElementById('totalConsertadas').textContent = totalConsertadas;
+    document.getElementById('totalReparos').textContent = totalReparos;
+    document.getElementById('totalAlmofadas').textContent = totalAlmofadas;
+    document.getElementById('valorComissao').textContent = valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+function toggleCheckbox(element) {
+    const checkbox = element.querySelector('input[type="checkbox"]');
+    checkbox.checked = !checkbox.checked;
+    element.classList.toggle('checked', checkbox.checked);
+}
+
+function toggleServicoCheckbox(element) {
+    const checkbox = element.querySelector('input[type="checkbox"]');
+    checkbox.checked = !checkbox.checked;
+    element.classList.toggle('checked', checkbox.checked);
+}
+
+function getFiltrosStatus() {
+    const checkboxes = document.querySelectorAll('.status-checkbox-item input[type="checkbox"]:checked');
+    return Array.from(checkboxes).map(cb => cb.value);
+}
+
+function renderizarCheckboxesStatus() {
+    const container = document.getElementById('statusCheckboxesAgenda');
+    container.innerHTML = '';
+    Object.keys(statusConfig).forEach(key => {
+        const config = statusConfig[key];
+        const isChecked = filtrosAtivosAgenda.status.includes(key);
+        const label = document.createElement('label');
+        label.className = 'status-checkbox-item' + (isChecked ? ' checked' : '');
+        label.onclick = function() { toggleCheckboxAgenda(this); };
+        label.innerHTML = `<input type="checkbox" value="${key}" ${isChecked ? 'checked' : ''}><span>${config.icone} ${config.nome}</span>`;
+        container.appendChild(label);
+    });
+}
+
+function renderizarSelectStatus() {
+    const select = document.getElementById('eventoStatus');
+    select.innerHTML = '';
+    Object.keys(statusConfig).forEach(key => {
+        const config = statusConfig[key];
+        const option = document.createElement('option');
+        option.value = key;
+        option.textContent = `${config.icone} ${config.nome}`;
+        select.appendChild(option);
+    });
+}
+
+function abrirModalGerenciarStatus() {
+    renderizarListaGerenciarStatus();
+    document.getElementById('modalGerenciarStatus').classList.add('show');
+}
+
+function fecharModalGerenciarStatus() {
+    document.getElementById('modalGerenciarStatus').classList.remove('show');
+}
+
+function renderizarListaGerenciarStatus() {
+    const lista = document.getElementById('listaStatusGerenciar');
+    lista.innerHTML = '';
+    Object.keys(statusConfig).forEach(key => {
+        const config = statusConfig[key];
+        const item = document.createElement('div');
+        item.className = 'status-manager-item';
+        item.innerHTML = `
+            <div style="display:flex; align-items:center;">
+                <span class="status-color-preview" style="background-color: ${config.cor};"></span>
+                <span><strong>${config.nome}</strong> <small style="color:#999;">(${key})</small></span>
+            </div>
+            <div>
+                <button class="btn-warning btn-sm" onclick="editarSituacao('${key}')">✏️</button>
+                <button class="btn-danger btn-sm" onclick="excluirSituacao('${key}')">🗑️</button>
+            </div>
+        `;
+        lista.appendChild(item);
+    });
+}
+
+function adicionarNovaSituacao() {
+    const nome = document.getElementById('novoStatusNome').value.trim();
+    const cor = document.getElementById('novoStatusCor').value;
+    if(!nome) {
+        alert('⚠️ Digite um nome para a situação');
+        return;
+    }
+    const chave = nome.toLowerCase().replace(/[^a-z0-9]/g, '_');
+    if(statusConfig[chave]) {
+        alert('⚠️ Já existe uma situação similar. Tente outro nome.');
+        return;
+    }
+    statusConfig[chave] = {
+        nome: nome,
+        icone: '📌',
+        cor: cor,
+        classe: chave
+    };
+    salvarStatusConfig();
+    document.getElementById('novoStatusNome').value = '';
+    renderizarListaGerenciarStatus();
+    alert('✅ Situação adicionada com sucesso!');
+}
+
+function editarSituacao(key) {
+    const config = statusConfig[key];
+    const novoNome = prompt("Editar Nome da Situação:", config.nome);
+    if(novoNome && novoNome.trim() !== "") {
+        statusConfig[key].nome = novoNome.trim();
+        const novaCor = prompt("Editar Cor (Hex):", config.cor);
+        if(novaCor) {
+            statusConfig[key].cor = novaCor;
+        }
+        salvarStatusConfig();
+        renderizarListaGerenciarStatus();
+    }
+}
+
+function excluirSituacao(key) {
+    if(confirm(`Tem certeza que deseja excluir a situação "${statusConfig[key].nome}"?\n⚠️ ATENÇÃO: Todos os eventos com esta situação serão movidos para "Em Andamento".`)) {
+        eventos.forEach(ev => {
+            if(ev.status === key) {
+                ev.status = 'em_andamento';
+            }
+        });
+        delete statusConfig[key];
+        salvarStatusConfig();
+        salvarDados();
+        renderizarListaGerenciarStatus();
+        alert('✅ Situação excluída com sucesso!');
+    }
+}
+
+function toggleCheckboxAgenda(element) {
+    const checkbox = element.querySelector('input[type="checkbox"]');
+    checkbox.checked = !checkbox.checked;
+    element.classList.toggle('checked', checkbox.checked);
+    aplicarFiltrosAgenda();
+}
+
+function getFiltrosStatusAgenda() {
+    const checkboxes = document.querySelectorAll('#statusCheckboxesAgenda input[type="checkbox"]:checked');
+    return Array.from(checkboxes).map(cb => cb.value);
+}
+
+function aplicarFiltrosAgenda() {
+    filtrosAtivosAgenda.texto = document.getElementById('filtroTextoAgenda').value.toLowerCase();
+    filtrosAtivosAgenda.dataInicio = document.getElementById('filtroDataInicioAgenda').value;
+    filtrosAtivosAgenda.dataFim = document.getElementById('filtroDataFimAgenda').value;
+    filtrosAtivosAgenda.status = getFiltrosStatusAgenda();
+    renderizarEventos();
+}
+
+function limparFiltrosAgenda() {
+    document.getElementById('filtroTextoAgenda').value = '';
+    document.getElementById('filtroDataInicioAgenda').value = '';
+    document.getElementById('filtroDataFimAgenda').value = '';
+    const checkboxes = document.querySelectorAll('#statusCheckboxesAgenda input[type="checkbox"]');
+    checkboxes.forEach(cb => {
+        cb.checked = false;
+        cb.parentElement.classList.remove('checked');
+    });
+    filtrosAtivosAgenda = { texto: '', dataInicio: '', dataFim: '', status: [] };
+    renderizarEventos();
+}
+
+function aplicarFiltrosComissao() {
+    filtrosAtivosComissao.texto = document.getElementById('filtroTextoComissao').value.toLowerCase();
+    filtrosAtivosComissao.mesAno = document.getElementById('filtroMesAnoComissao').value;
+    renderizarComissoes();
+}
+
+function limparFiltrosComissao() {
+    document.getElementById('filtroTextoComissao').value = '';
+    const hoje = new Date();
+    const mesAnoAtual = hoje.toISOString().slice(0, 7);
+    document.getElementById('filtroMesAnoComissao').value = mesAnoAtual;
+    filtrosAtivosComissao = { texto: '', mesAno: mesAnoAtual };
+    renderizarComissoes();
+}
+
+function filtrarComissao() {
+    const termo = document.getElementById('searchComissao').value.toLowerCase();
+    filtrosAtivosComissao.texto = termo;
+    renderizarComissoes();
+}
+
+function getServicosSelecionados() {
+    const checkboxes = document.querySelectorAll('#servicosCheckboxes input[type="checkbox"]:checked');
+    return Array.from(checkboxes).map(cb => cb.value);
+}
+
+function buscarModelosAutocomplete() {
+    const termo = document.getElementById('comissaoModelo').value.toLowerCase();
+    const autocompleteList = document.getElementById('modeloAutocompleteList');
+    autocompleteList.innerHTML = '';
+    if (termo.length < 2) {
+        autocompleteList.classList.remove('show');
+        return;
+    }
+    const modelosFiltrados = modelos.filter(m => m.nome.toLowerCase().includes(termo));
+    if (modelosFiltrados.length === 0) {
+        autocompleteList.classList.remove('show');
+        return;
+    }
+    modelosFiltrados.forEach(modelo => {
+        const item = document.createElement('div');
+        item.className = 'autocomplete-item';
+        item.innerHTML = '<div style="display: flex; justify-content: space-between; align-items: center;"><span><strong>' + modelo.nome + '</strong> <small style="color: #999;">(' + formatarCategoriaTexto(modelo.categoria) + ')</small></span><span class="modelo-valor-display">' + parseFloat(modelo.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) + '</span></div>';
+        item.onclick = function() {
+            document.getElementById('comissaoModelo').value = modelo.nome;
+            document.getElementById('comissaoValor').value = modelo.valor;
+            const catField = document.getElementById('comissaoCategoria');
+            if(catField) catField.value = modelo.categoria || '';
+            autocompleteList.classList.remove('show');
+        };
+        autocompleteList.appendChild(item);
+    });
+    autocompleteList.classList.add('show');
+}
+
+function renderizarModelos(filtro) {
+    filtro = filtro || '';
+    const lista = document.getElementById('listaModelos');
+    lista.innerHTML = '';
+    let modelosFiltrados = modelos.filter(m => {
+        if(filtro && !m.nome.toLowerCase().includes(filtro.toLowerCase())) {
+            return false;
+        }
+        return true;
+    });
+    document.getElementById('totalModelos').textContent = modelosFiltrados.length;
+    if(modelosFiltrados.length === 0) {
+        lista.innerHTML = '<p style="text-align:center; color:#999; padding:20px;">Nenhum modelo cadastrado.</p>';
+        return;
+    }
+    modelosFiltrados.forEach(m => {
+        const div = document.createElement('div');
+        div.className = 'modelo-item';
+        div.innerHTML = '<div style="display:flex; align-items:flex-start; gap:10px; width:100%;"><div style="flex:1;"><div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;"><div><strong style="font-size: 16px;">' + m.nome + '</strong><br><small style="color: #666;">' + formatarCategoriaTexto(m.categoria) + '</small></div><div class="comissao-valor">' + parseFloat(m.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) + '</div></div>' + (m.obs ? '<p style="margin-top: 10px; color: #666; font-size: 13px;">📝 ' + m.obs + '</p>' : '') + '<div class="modelo-actions" style="margin-top: 10px; display: flex; gap: 5px;"><button class="btn-warning btn-sm" onclick="editarModelo(' + m.id + ')">✏️ Editar</button><button class="btn-danger btn-sm" onclick="excluirModelo(' + m.id + ')">🗑️ Excluir</button></div></div></div>';
+        lista.appendChild(div);
+    });
+}
+
+function filtrarModelos() {
+    const termo = document.getElementById('searchModelos').value;
+    renderizarModelos(termo);
+}
+
+function abrirModalModelo() {
+    renderizarSelectCategoria();
+    document.getElementById('modeloId').value = '';
+    document.getElementById('modeloNome').value = '';
+    document.getElementById('modeloValor').value = '';
+    const primeiraCategoria = Object.keys(categoriasConfig)[0] || 'impressora';
+    document.getElementById('modeloCategoria').value = primeiraCategoria;
+    document.getElementById('modeloObs').value = '';
+    document.getElementById('modalModeloTitulo').textContent = 'Novo Modelo';
+    document.getElementById('modalModelo').classList.add('show');
+}
+
+function fecharModalModelo() {
+    document.getElementById('modalModelo').classList.remove('show');
+}
+
+function editarModelo(id) {
+    const m = modelos.find(item => item.id === id);
+    if(!m) return;
+    renderizarSelectCategoria();
+    document.getElementById('modeloId').value = m.id;
+    document.getElementById('modeloNome').value = m.nome;
+    document.getElementById('modeloValor').value = m.valor;
+    const sel = document.getElementById('modeloCategoria');
+    const cat = m.categoria || Object.keys(categoriasConfig)[0] || 'impressora';
+    // se a categoria não existir no select, adiciona uma opção temporária
+    if(![...sel.options].some(o => o.value === cat)) {
+        const opt = document.createElement('option');
+        opt.value = cat;
+        opt.textContent = formatarCategoriaTexto(cat);
+        sel.appendChild(opt);
+    }
+    sel.value = cat;
+    document.getElementById('modeloObs').value = m.obs || '';
+    document.getElementById('modalModeloTitulo').textContent = 'Editar Modelo';
+    document.getElementById('modalModelo').classList.add('show');
+}
+
+function salvarModelo() {
+    const id = document.getElementById('modeloId').value;
+    const nome = document.getElementById('modeloNome').value;
+    const valor = document.getElementById('modeloValor').value;
+    const categoria = document.getElementById('modeloCategoria').value;
+    const obs = document.getElementById('modeloObs').value;
+    if(!nome || !valor) {
+        alert('⚠️ Preencha Nome e Valor');
+        return;
+    }
+    const modeloData = { nome: nome, valor: parseFloat(valor).toFixed(2), categoria: categoria, obs: obs };
+    if (id) {
+        const index = modelos.findIndex(item => item.id == id);
+        if (index !== -1) {
+            modeloData.id = parseInt(id);
+            modeloData.dataCadastro = modelos[index].dataCadastro;
+            modelos[index] = modeloData;
+        }
+    } else {
+        modeloData.id = Date.now();
+        modeloData.dataCadastro = new Date().toISOString().split('T')[0];
+        modelos.unshift(modeloData);
+    }
+    salvarDadosModelos();
+    fecharModalModelo();
+    alert(id ? '✅ Modelo atualizado com sucesso!' : '✅ Modelo cadastrado com sucesso!');
+}
+
+function excluirModelo(id) {
+    if(confirm('Tem certeza que deseja excluir este modelo?')) {
+        modelos = modelos.filter(m => m.id !== id);
+        salvarDadosModelos();
+    }
+}
+
+function renderizarComissoes() {
+    const lista = document.getElementById('listaComissao');
+    lista.innerHTML = '';
+    let comissoesFiltradas = comissoes.filter(c => {
+        if(filtrosAtivosComissao.texto && !c.os.toLowerCase().includes(filtrosAtivosComissao.texto) && !c.modelo.toLowerCase().includes(filtrosAtivosComissao.texto)) {
+            return false;
+        }
+        if(filtrosAtivosComissao.mesAno && c.mesAno !== filtrosAtivosComissao.mesAno) {
+            return false;
+        }
+        return true;
+    });
+    document.getElementById('totalComissao').textContent = comissoesFiltradas.length;
+    const valorTotal = comissoesFiltradas.reduce((sum, c) => sum + (parseFloat(c.valor) || 0), 0);
+    document.getElementById('valorTotalComissao').textContent = valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    if(comissoesFiltradas.length === 0) {
+        lista.innerHTML = '<p style="text-align:center; color:#999; padding:20px;">Nenhum registro encontrado.</p>';
+        return;
+    }
+    comissoesFiltradas.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'comissao-item';
+        const servicosHtml = c.servicos && c.servicos.length > 0 ?
+            c.servicos.map(s => {
+                return '<span class="comissao-servico-item">' + escapeHtml(formatarServicoTexto(s)) + '</span>';
+            }).join('') : '<span style="color:#999; font-size:13px;">Nenhum serviço selecionado</span>';
+        const mesAnoFormatado = c.mesAno ? formatarMesAno(c.mesAno) : '-';
+        const categoriaHtml = c.categoria ? '<br><small style="color:#666;">' + escapeHtml(formatarCategoriaTexto(c.categoria)) + '</small>' : '';
+        div.innerHTML = '<div style="display:flex; align-items:flex-start; gap:10px; width:100%;"><div style="flex:1;"><div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;"><div><strong style="font-size: 16px;">OS ' + c.os + ' - ' + c.modelo + '</strong>' + categoriaHtml + '<br><span class="comissao-mes">📅 ' + mesAnoFormatado + '</span></div><div class="comissao-valor">' + parseFloat(c.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) + '</div></div><div class="comissao-servicos">' + servicosHtml + '</div>' + (c.obs ? '<p style="margin-top: 10px; color: #666; font-size: 13px;">📝 ' + c.obs + '</p>' : '') + '<div class="comissao-actions" style="margin-top: 10px; display: flex; gap: 5px;"><button class="btn-warning btn-sm" onclick="editarComissao(' + c.id + ')">✏️ Editar</button><button class="btn-danger btn-sm" onclick="excluirComissao(' + c.id + ')">🗑️ Excluir</button></div></div></div>';
+        lista.appendChild(div);
+    });
+}
+
+function formatarMesAno(mesAno) {
+    if(!mesAno) return '-';
+    const partes = mesAno.split('-');
+    if(partes.length === 2) {
+        const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+        return meses[parseInt(partes[1]) - 1] + ' de ' + partes[0];
+    }
+    return mesAno;
+}
+
+function escapeHtml(valor) {
+    return String(valor || '').replace(/[&<>"']/g, function(caractere) {
+        return {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        }[caractere];
+    });
+}
+
+function abrirModalComissao() {
+    renderizarSelectCategoria();
+    document.getElementById('comissaoId').value = '';
+    document.getElementById('comissaoOS').value = '';
+    document.getElementById('comissaoModelo').value = '';
+    document.getElementById('comissaoValor').value = '';
+    const primeiraCategoria = Object.keys(categoriasConfig)[0] || 'impressora';
+    document.getElementById('comissaoCategoria').value = primeiraCategoria;
+    const hoje = new Date();
+    const mesAnoAtual = hoje.toISOString().slice(0, 7);
+    document.getElementById('comissaoMesAno').value = mesAnoAtual;
+    document.getElementById('comissaoObs').value = '';
+    cancelarCriarServico();
+    renderizarCheckboxesServicos([]);
+    document.getElementById('modalComissaoTitulo').textContent = 'Nova Máquina';
+    document.getElementById('modalComissao').classList.add('show');
+}
+
+function fecharModalComissao() {
+    document.getElementById('modalComissao').classList.remove('show');
+    document.getElementById('modeloAutocompleteList').classList.remove('show');
+}
+
+function editarComissao(id) {
+    const c = comissoes.find(item => item.id === id);
+    if(!c) return;
+    renderizarSelectCategoria();
+    document.getElementById('comissaoId').value = c.id;
+    document.getElementById('comissaoOS').value = c.os;
+    document.getElementById('comissaoModelo').value = c.modelo;
+    document.getElementById('comissaoValor').value = c.valor;
+    const selCat = document.getElementById('comissaoCategoria');
+    const cat = c.categoria || Object.keys(categoriasConfig)[0] || 'impressora';
+    if(![...selCat.options].some(o => o.value === cat)) {
+        const opt = document.createElement('option');
+        opt.value = cat;
+        opt.textContent = formatarCategoriaTexto(cat);
+        selCat.appendChild(opt);
+    }
+    selCat.value = cat;
+    document.getElementById('comissaoMesAno').value = c.mesAno || '';
+    document.getElementById('comissaoObs').value = c.obs || '';
+    cancelarCriarServico();
+    renderizarCheckboxesServicos(c.servicos || []);
+    document.getElementById('modalComissaoTitulo').textContent = 'Editar Máquina';
+    document.getElementById('modalComissao').classList.add('show');
+}
+
+function salvarComissao() {
+    const id = document.getElementById('comissaoId').value;
+    const os = document.getElementById('comissaoOS').value;
+    const modelo = document.getElementById('comissaoModelo').value;
+    const valor = document.getElementById('comissaoValor').value;
+    const mesAno = document.getElementById('comissaoMesAno').value;
+    const servicos = getServicosSelecionados();
+    const obs = document.getElementById('comissaoObs').value;
+    if(!os || !modelo || !valor) {
+        alert('⚠️ Preencha OS, Modelo e Valor');
+        return;
+    }
+    const categoria = (document.getElementById('comissaoCategoria') || {}).value || '';
+    const comissaoData = { os: os, modelo: modelo, categoria: categoria, valor: parseFloat(valor).toFixed(2), mesAno: mesAno, servicos: servicos, obs: obs };
+    if (id) {
+        const index = comissoes.findIndex(item => item.id == id);
+        if (index !== -1) {
+            comissaoData.id = parseInt(id);
+            comissaoData.dataCadastro = comissoes[index].dataCadastro;
+            comissoes[index] = comissaoData;
+        }
+    } else {
+        comissaoData.id = Date.now();
+        comissaoData.dataCadastro = new Date().toISOString().split('T')[0];
+        comissoes.unshift(comissaoData);
+    }
+    salvarDadosComissao();
+    fecharModalComissao();
+    alert(id ? '✅ Registro atualizado com sucesso!' : '✅ Registro cadastrado com sucesso!');
+}
+
+function excluirComissao(id) {
+    if(confirm('Tem certeza que deseja excluir este registro?')) {
+        comissoes = comissoes.filter(c => c.id !== id);
+        salvarDadosComissao();
+    }
+}
+
+function imprimirComissao() {
+    const printArea = document.getElementById('printArea');
+    const printTabelaBody = document.getElementById('printTabelaBody');
+    const printLista = document.getElementById('printLista');
+    const dataAtual = new Date();
+    const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    const mesAtualNome = meses[dataAtual.getMonth()];
+    const anoAtual = dataAtual.getFullYear();
+    
+    document.getElementById('printTitulo').textContent = '💰 Relatório de Comissão 💰';
+    document.getElementById('printSubtitulo').textContent = 'Técnico Vanderson Canedo, Cidade Soluções';
+    document.getElementById('printPeriodo').textContent = filtrosAtivosComissao.mesAno ? formatarMesAno(filtrosAtivosComissao.mesAno) : 'Todos os períodos';
+    document.getElementById('printDataEmissao').textContent = dataAtual.toLocaleDateString('pt-BR');
+    
+    let comissoesFiltradas = comissoes.filter(c => {
+        if(filtrosAtivosComissao.texto && !c.os.toLowerCase().includes(filtrosAtivosComissao.texto) && !c.modelo.toLowerCase().includes(filtrosAtivosComissao.texto)) {
+            return false;
+        }
+        if(filtrosAtivosComissao.mesAno && c.mesAno !== filtrosAtivosComissao.mesAno) {
+            return false;
+        }
+        return true;
+    });
+    
+    document.getElementById('printTotalServicos').textContent = comissoesFiltradas.length + ' máquinas';
+    printTabelaBody.innerHTML = '';
+    printLista.innerHTML = '';
+    const valorTotal = comissoesFiltradas.reduce((sum, c) => sum + (parseFloat(c.valor) || 0), 0);
+    
+    if(comissoesFiltradas.length === 0) {
+        printTabelaBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #666; padding: 30px;">Nenhum registro para imprimir.</td></tr>';
+        document.getElementById('printTotalBox').style.display = 'none';
+    } else {
+        document.getElementById('printTotalBox').style.display = 'block';
+        document.getElementById('printValorTotal').textContent = valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        comissoesFiltradas.forEach(c => {
+            const servicosTexto = c.servicos && c.servicos.length > 0 ?
+                c.servicos.map(s => {
+                    return escapeHtml(formatarServicoTexto(s));
+                }).join('<br>') : 'Nenhum serviço';
+            const observacaoTexto = c.obs && c.obs.trim() ? c.obs : '-';
+            const categoriaTexto = c.categoria ? escapeHtml(formatarCategoriaTexto(c.categoria)) : '-';
+            const row = document.createElement('tr');
+            row.innerHTML =
+                '<td>' + escapeHtml(c.os) + '</td>' +
+                '<td>' + escapeHtml(c.modelo) + '</td>' +
+                '<td>' + categoriaTexto + '</td>' +
+                '<td class="print-col-servicos">' + servicosTexto + '</td>' +
+                '<td class="print-col-valor">' + parseFloat(c.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) + '</td>' +
+                '<td class="print-col-obs">' + escapeHtml(observacaoTexto) + '</td>';
+            printTabelaBody.appendChild(row);
+        });
+    }
+    
+    document.getElementById('printFooterData').textContent = dataAtual.toLocaleString('pt-BR');
+    printArea.classList.add('show');
+    setTimeout(() => {
+        window.print();
+        printArea.classList.remove('show');
+    }, 500);
+}
+
+function aplicarFiltrosEmEventos(eventosParaFiltrar, filtros) {
+    return eventosParaFiltrar.filter(ev => {
+        if(filtros.texto && !ev.descricao.toLowerCase().includes(filtros.texto) && !ev.os.includes(filtros.texto)) {
+            return false;
+        }
+        if(filtros.dataInicio || filtros.dataFim) {
+            const dataEvento = extrairData(ev.dataTexto);
+            if(filtros.dataInicio && dataEvento < filtros.dataInicio) return false;
+            if(filtros.dataFim && dataEvento > filtros.dataFim) return false;
+        }
+        if(filtros.status.length > 0 && !filtros.status.includes(ev.status)) {
+            return false;
+        }
+        return true;
+    });
+}
+
+function extrairData(dataTexto) {
+    const match = dataTexto.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+    if(match) {
+        return match[3] + '-' + match[2] + '-' + match[1];
+    }
+    return '';
+}
+
+function renderizarEventos(filtro) {
+    filtro = filtro || '';
+    const lista = document.getElementById('listaEventos');
+    lista.innerHTML = '';
+    let eventosFiltrados = eventos.filter(e => e.os.includes(filtro));
+    eventosFiltrados = aplicarFiltrosEmEventos(eventosFiltrados, filtrosAtivosAgenda);
+    
+    if(eventosFiltrados.length === 0) {
+        lista.innerHTML = '<p style="text-align:center; color:#999; padding:20px;">Nenhum evento encontrado.</p>';
+        return;
+    }
+    
+    eventosFiltrados.forEach(ev => {
+        const div = document.createElement('div');
+        const config = statusConfig[ev.status] || { cor: '#e0e0e0', nome: ev.status };
+        div.className = 'event-item status-' + ev.status;
+        div.style.borderLeftColor = config.cor;
+        let infoData = '📅 ' + ev.dataTexto;
+        if(ev.historico && ev.historico.length > 1) {
+            infoData += ' <span style="color:#667eea; font-weight:bold;">(Atualizado ' + (ev.historico.length - 1) + 'x)</span>';
+        }
+        div.innerHTML = '<div style="display:flex; align-items:flex-start; gap:10px; width:100%;"><div style="flex:1;"><strong>' + ev.os + ' ' + ev.descricao + '</strong><br><small class="text-muted">' + infoData + ' | <span class="status-badge" style="background-color: ' + config.cor + '">' + formatarStatus(ev.status) + '</span></small>' + (ev.anexos && ev.anexos.length > 0 ? '<small style="color:#667eea;"> 📷 ' + ev.anexos.length + ' imagem(ns)</small>' : '') + '<div class="event-actions" style="margin-top: 10px; display: flex; gap: 5px;"><button class="btn-print btn-sm" onclick="imprimirComprovanteAgenda(' + ev.id + ')">🖨️ Comprovante</button><button class="btn-warning btn-sm" onclick="editarEvento(' + ev.id + ')">✏️ Editar</button><button class="btn-danger btn-sm" onclick="excluirEvento(' + ev.id + ')">🗑️ Excluir</button></div></div></div>';
+        lista.appendChild(div);
+    });
+}
+
+function renderizarCardsPendencias() {
+    renderizarCardsPendenciasContainer('statusCardsContainer', false);
+    renderizarCardsPendenciasContainer('statusCardsContainerFS', true);
+}
+
+function renderizarCardsPendenciasContainer(containerId, isFullscreen) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    const statusKeys = Object.keys(statusConfig);
+    let totalPendencias = 0;
+    
+    statusKeys.forEach(statusKey => {
+        let eventosDoStatus = eventos.filter(e => e.status === statusKey);
+        eventosDoStatus = aplicarFiltrosEmEventos(eventosDoStatus, filtrosAtivos);
+        const count = eventosDoStatus.length;
+        if(statusKey !== 'concluido') {
+            totalPendencias += count;
+        }
+        const config = statusConfig[statusKey];
+        const actionText = statusKey === 'a_aprovar' ? 'Concil' : (statusKey === 'concluido' ? 'Ver' : 'Editar');
+        const card = document.createElement('div');
+        card.className = 'status-card-item ' + (config.classe || '');
+        if(config.cor) {
+            card.style.borderLeftColor = config.cor;
+        }
+        card.onclick = function() { isFullscreen ? mostrarPendenciasDetalhadasFS(statusKey) : mostrarPendenciasDetalhadas(statusKey); };
+        card.innerHTML = '<div class="status-card-left"><span class="status-icon">' + config.icone + '</span><span class="status-name">' + config.nome + '</span>' + (count > 0 ? '<span class="status-badges"><span class="status-badge-dot" style="background: ' + config.cor + '"></span></span>' : '') + '</div><div class="status-card-right"><span class="action-text">' + (statusKey === 'a_aprovar' && count === 0 && statusKey !== 'concluido' ? '😂 Tudo em dia! ✓' : '✓ ' + actionText) + '</span><span class="count-number">' + count + '</span><button class="btn-ver-small" onclick="event.stopPropagation(); ' + (isFullscreen ? 'mostrarPendenciasDetalhadasFS' : 'mostrarPendenciasDetalhadas') + '(\'' + statusKey + '\')">Ver</button></div>';
+        container.appendChild(card);
+    });
+    
+    if(!isFullscreen) {
+        document.getElementById('totalPendenciasBadge').textContent = totalPendencias + ' pendência' + (totalPendencias !== 1 ? 's' : '');
+    }
+}
+
+function mostrarPendenciasDetalhadas(statusKey) {
+    const container = document.getElementById('pendenciasDetalhadas');
+    const lista = document.getElementById('listaPendenciasDetalhadas');
+    const titulo = document.getElementById('tituloListaDetalhada');
+    let pendencias = eventos.filter(e => e.status === statusKey);
+    pendencias = aplicarFiltrosEmEventos(pendencias, filtrosAtivos);
+    const config = statusConfig[statusKey] || { cor: '#e0e0e0', nome: statusKey, icone: '📌' };
+    titulo.textContent = config.icone + ' ' + config.nome + ' (' + pendencias.length + ')';
+    lista.innerHTML = '';
+    if(pendencias.length === 0) {
+        lista.innerHTML = '<div class="empty-message"><div class="empty-emoji">😂</div><p>Tudo em dia! Nenhum registro neste status.</p></div>';
+    } else {
+        pendencias.forEach(ev => {
+            const item = document.createElement('div');
+            item.className = 'pendencia-item-detail status-' + ev.status;
+            item.style.borderLeftColor = config.cor;
+            item.innerHTML = '<div class="pendencia-header-detail"><span class="pendencia-os-detail">OS ' + ev.os + '</span><span class="pendencia-status-badge" style="background-color: ' + config.cor + '">' + formatarStatus(ev.status) + '</span></div><p class="pendencia-desc-detail">' + ev.descricao + '</p><div style="font-size: 12px; color: #888; margin-bottom: 10px;">📅 ' + ev.dataTexto + '</div>' + (ev.anexos && ev.anexos.length > 0 ? '<div style="font-size: 12px; color: #667eea; margin-bottom: 10px;">📷 ' + ev.anexos.length + ' imagem(ns) anexada(s)</div>' : '') + '<div class="pendencia-actions-detail"><button class="btn-warning btn-sm" onclick="editarEvento(' + ev.id + ')">✏️ Editar</button>' + (statusKey !== 'concluido' ? '<button class="btn-success btn-sm" onclick="concluirPendencia(' + ev.id + ')">✅ Concluir</button>' : '') + '<button class="btn-danger btn-sm" onclick="excluirEvento(' + ev.id + '); renderizarCardsPendencias();">🗑️ Excluir</button></div>';
+            lista.appendChild(item);
+        });
+    }
+    container.classList.add('show');
+    statusAtualFiltro = statusKey;
+    setTimeout(function() { container.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 100);
+}
+
+function mostrarPendenciasDetalhadasFS(statusKey) {
+    const container = document.getElementById('pendenciasDetalhadasFS');
+    const lista = document.getElementById('listaPendenciasDetalhadasFS');
+    const titulo = document.getElementById('tituloListaDetalhadaFS');
+    let pendencias = eventos.filter(e => e.status === statusKey);
+    pendencias = aplicarFiltrosEmEventos(pendencias, filtrosAtivos);
+    const config = statusConfig[statusKey] || { cor: '#e0e0e0', nome: statusKey, icone: '📌' };
+    titulo.textContent = config.icone + ' ' + config.nome + ' (' + pendencias.length + ')';
+    lista.innerHTML = '';
+    if(pendencias.length === 0) {
+        lista.innerHTML = '<div class="empty-message"><div class="empty-emoji">😂</div><p>Tudo em dia! Nenhum registro neste status.</p></div>';
+    } else {
+        pendencias.forEach(ev => {
+            const item = document.createElement('div');
+            item.className = 'pendencia-item-detail status-' + ev.status;
+            item.style.borderLeftColor = config.cor;
+            item.innerHTML = '<div class="pendencia-header-detail"><span class="pendencia-os-detail">OS ' + ev.os + '</span><span class="pendencia-status-badge" style="background-color: ' + config.cor + '">' + formatarStatus(ev.status) + '</span></div><p class="pendencia-desc-detail">' + ev.descricao + '</p><div style="font-size: 12px; color: #888; margin-bottom: 10px;">📅 ' + ev.dataTexto + '</div>' + (ev.anexos && ev.anexos.length > 0 ? '<div style="font-size: 12px; color: #667eea; margin-bottom: 10px;">📷 ' + ev.anexos.length + ' imagem(ns) anexada(s)</div>' : '') + '<div class="pendencia-actions-detail"><button class="btn-warning btn-sm" onclick="editarEvento(' + ev.id + '); fecharModalPendencias();">✏️ Editar</button>' + (statusKey !== 'concluido' ? '<button class="btn-success btn-sm" onclick="concluirPendencia(' + ev.id + ')">✅ Concluir</button>' : '') + '<button class="btn-danger btn-sm" onclick="excluirEvento(' + ev.id + '); renderizarCardsPendencias();">🗑️ Excluir</button></div>';
+            lista.appendChild(item);
+        });
+    }
+    container.classList.add('show');
+    statusAtualFiltro = statusKey;
+}
+
+function imprimirSelecionado() {
+    if(!statusAtualFiltro) {
+        alert('Selecione uma situação primeiro!');
+        return;
+    }
+    let pendencias = eventos.filter(e => e.status === statusAtualFiltro);
+    pendencias = aplicarFiltrosEmEventos(pendencias, filtrosAtivos);
+    const config = statusConfig[statusAtualFiltro] || { cor: '#667eea', nome: statusAtualFiltro };
+    const printArea = document.getElementById('printArea');
+    const printLista = document.getElementById('printLista');
+    
+    document.getElementById('printTitulo').textContent = '📋 Relatório de Pendências - Cidade Soluções';
+    document.getElementById('printSubtitulo').textContent = 'Técnico Vanderson Canedo';
+    document.getElementById('printPeriodo').textContent = config.nome;
+    document.getElementById('printDataEmissao').textContent = new Date().toLocaleDateString('pt-BR');
+    document.getElementById('printTotalServicos').textContent = pendencias.length + ' eventos';
+    document.getElementById('printTabelaBody').innerHTML = '';
+    document.getElementById('printTotalBox').style.display = 'none';
+    printLista.innerHTML = '';
+    
+    if(pendencias.length === 0) {
+        printLista.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Nenhum item para imprimir.</p>';
+    } else {
+        pendencias.forEach(ev => {
+            const item = document.createElement('div');
+            item.className = 'print-item';
+            item.style.borderLeftColor = config.cor;
+            item.innerHTML = '<div class="print-item-header"><span class="print-item-os">OS ' + ev.os + '</span><span class="print-item-status" style="background: ' + config.cor + '">' + formatarStatus(ev.status) + '</span></div><p class="print-item-desc">' + ev.descricao + '</p><div class="print-item-date">📅 ' + ev.dataTexto + '</div>';
+            if(ev.historico && ev.historico.length > 0) {
+                const historicoDiv = document.createElement('div');
+                historicoDiv.className = 'print-historico-container';
+                historicoDiv.style.display = 'block';
+                historicoDiv.style.marginTop = '15px';
+                historicoDiv.style.borderTop = '2px dashed #ddd';
+                historicoDiv.style.paddingTop = '15px';
+                const tituloHistorico = document.createElement('div');
+                tituloHistorico.className = 'print-historico-title';
+                tituloHistorico.textContent = '📜 HISTÓRICO DE ATUALIZAÇÕES';
+                historicoDiv.appendChild(tituloHistorico);
+                ev.historico.forEach((hist, index) => {
+                    const histItem = document.createElement('div');
+                    histItem.className = 'print-historico-item';
+                    histItem.innerHTML = `
+                        <div class="print-historico-date">${index + 1}º Registro - ${hist.data}</div>
+                        <div class="print-historico-text">${hist.descricao}</div>
+                    `;
+                    historicoDiv.appendChild(histItem);
+                });
+                item.appendChild(historicoDiv);
+            }
+            printLista.appendChild(item);
+        });
+    }
+    
+    document.getElementById('printFooterData').textContent = new Date().toLocaleString('pt-BR');
+    printArea.classList.add('show');
+    window.print();
+    printArea.classList.remove('show');
+}
+
+function imprimirAgendaFiltrada() {
+    const printArea = document.getElementById('printArea');
+    const printLista = document.getElementById('printLista');
+    let eventosFiltrados = aplicarFiltrosEmEventos(eventos, filtrosAtivosAgenda);
+    
+    document.getElementById('printTitulo').textContent = '📅 Agenda Geral Filtrada - Cidade Soluções';
+    document.getElementById('printSubtitulo').textContent = 'Técnico Vanderson Canedo';
+    document.getElementById('printPeriodo').textContent = 'Todos os status selecionados';
+    document.getElementById('printDataEmissao').textContent = new Date().toLocaleDateString('pt-BR');
+    document.getElementById('printTotalServicos').textContent = eventosFiltrados.length + ' eventos';
+    document.getElementById('printTabelaBody').innerHTML = '';
+    document.getElementById('printTotalBox').style.display = 'none';
+    printLista.innerHTML = '';
+    
+    if(eventosFiltrados.length === 0) {
+        printLista.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Nenhum item para imprimir.</p>';
+    } else {
+        eventosFiltrados.forEach(ev => {
+            const item = document.createElement('div');
+            item.className = 'print-item';
+            const config = statusConfig[ev.status] || { cor: '#667eea' };
+            item.style.borderLeftColor = config.cor;
+            item.innerHTML = '<div class="print-item-header"><span class="print-item-os">OS ' + ev.os + '</span><span class="print-item-status" style="background: ' + config.cor + '">' + formatarStatus(ev.status) + '</span></div><p class="print-item-desc">' + ev.descricao + '</p><div class="print-item-date">📅 ' + ev.dataTexto + '</div>';
+            if(ev.historico && ev.historico.length > 0) {
+                const historicoDiv = document.createElement('div');
+                historicoDiv.className = 'print-historico-container';
+                historicoDiv.style.display = 'block';
+                historicoDiv.style.marginTop = '15px';
+                historicoDiv.style.borderTop = '2px dashed #ddd';
+                historicoDiv.style.paddingTop = '15px';
+                const tituloHistorico = document.createElement('div');
+                tituloHistorico.className = 'print-historico-title';
+                tituloHistorico.textContent = '📜 HISTÓRICO DE ATUALIZAÇÕES';
+                historicoDiv.appendChild(tituloHistorico);
+                ev.historico.forEach((hist, index) => {
+                    const histItem = document.createElement('div');
+                    histItem.className = 'print-historico-item';
+                    histItem.innerHTML = `
+                        <div class="print-historico-date">${index + 1}º Registro - ${hist.data}</div>
+                        <div class="print-historico-text">${hist.descricao}</div>
+                    `;
+                    historicoDiv.appendChild(histItem);
+                });
+                item.appendChild(historicoDiv);
+            }
+            printLista.appendChild(item);
+        });
+    }
+    
+    document.getElementById('printFooterData').textContent = new Date().toLocaleString('pt-BR');
+    printArea.classList.add('show');
+    window.print();
+    printArea.classList.remove('show');
+}
+
+function formatarStatus(status) {
+    return statusConfig[status] ? statusConfig[status].nome : status;
+}
+
+function filtrarAgenda() {
+    const termo = document.getElementById('searchAgenda').value;
+    renderizarEventos(termo);
+}
+
+function abrirModalEvento() {
+    document.getElementById('eventoId').value = '';
+    document.getElementById('eventoOS').value = '';
+    document.getElementById('eventoDesc').value = '';
+    document.getElementById('eventoStatus').value = 'em_andamento';
+    const agora = new Date();
+    const ano = agora.getFullYear();
+    const mes = String(agora.getMonth() + 1).padStart(2, '0');
+    const dia = String(agora.getDate()).padStart(2, '0');
+    const horas = String(agora.getHours()).padStart(2, '0');
+    const minutos = String(agora.getMinutes()).padStart(2, '0');
+    document.getElementById('eventoDataHora').value = ano + '-' + mes + '-' + dia + 'T' + horas + ':' + minutos;
+    document.getElementById('modalEventoTitulo').textContent = 'Novo Evento';
+    document.getElementById('imagePreviewContainer').innerHTML = '';
+    imageFiles = [];
+    existingAttachments = [];
+    atualizarContadorImagens();
+    document.getElementById('btnVisualizarImagens').style.display = 'none';
+    document.getElementById('historicoSection').style.display = 'none';
+    document.getElementById('modalEvento').classList.add('show');
+}
+
+function fecharModalEvento() {
+    document.getElementById('modalEvento').classList.remove('show');
+}
+
+function editarEvento(id) {
+    const ev = eventos.find(e => e.id === id);
+    if(!ev) return;
+    document.getElementById('eventoId').value = ev.id;
+    document.getElementById('eventoOS').value = ev.os;
+    document.getElementById('eventoDesc').value = ev.descricao;
+    document.getElementById('eventoStatus').value = ev.status;
+    if (ev.dataTexto) {
+        try {
+            const partes = ev.dataTexto.split(' ');
+            const dataParte = partes[0];
+            const horaParte = partes[1] || '00:00';
+            const dataPartes = dataParte.split('/');
+            if(dataPartes.length === 3) {
+                const ano = dataPartes[2];
+                const mes = dataPartes[1];
+                const dia = dataPartes[0];
+                document.getElementById('eventoDataHora').value = ano + '-' + mes + '-' + dia + 'T' + horaParte;
+            }
+        } catch(e) {
+            const agora = new Date();
+            document.getElementById('eventoDataHora').value = agora.toISOString().slice(0, 16);
+        }
+    }
+    document.getElementById('modalEventoTitulo').textContent = 'Editar Evento';
+    imageFiles = [];
+    existingAttachments = ev.anexos ? [...ev.anexos] : [];
+    const imageContainer = document.getElementById('imagePreviewContainer');
+    imageContainer.innerHTML = '';
+    if (existingAttachments && existingAttachments.length > 0) {
+        existingAttachments.forEach(function(img, index) {
+            const imgItem = document.createElement('div');
+            imgItem.className = 'image-item';
+            imgItem.innerHTML = '<img src="' + img + '" alt="Imagem ' + (index + 1) + '"><button class="remove-image" onclick="removeExistingImage(' + index + ')">×</button>';
+            imageContainer.appendChild(imgItem);
+        });
+    }
+    atualizarContadorImagens();
+    document.getElementById('historicoSection').style.display = 'block';
+    renderizarHistorico(ev);
+    document.getElementById('modalEvento').classList.add('show');
+}
+
+function renderizarHistorico(evento) {
+    const historicoLista = document.getElementById('historicoLista');
+    historicoLista.innerHTML = '';
+    if(!evento.historico || evento.historico.length === 0) {
+        historicoLista.innerHTML = '<div class="historico-empty">Nenhuma atualização registrada</div>';
+        return;
+    }
+    const historicoInvertido = [...evento.historico].reverse();
+    historicoInvertido.forEach((item, index) => {
+        const historicoItem = document.createElement('div');
+        historicoItem.className = 'historico-item';
+        const realIndex = evento.historico.length - 1 - index;
+        historicoItem.innerHTML = `
+            <div class="historico-item-header">
+                <span class="historico-item-date">📅 ${item.data}</span>
+                ${index === 0 ? '<span style="background: #28a745; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px;">Mais recente</span>' : ''}
+            </div>
+            <div class="historico-item-desc">${item.descricao}</div>
+            <div class="historico-item-actions">
+                <button class="btn-warning btn-sm" onclick="editarAtualizacao(${realIndex})">✏️ Editar</button>
+                <button class="btn-danger btn-sm" onclick="excluirAtualizacao(${realIndex})">🗑️ Excluir</button>
+            </div>
+        `;
+        historicoLista.appendChild(historicoItem);
+    });
+}
+
+function adicionarAtualizacao() {
+    const novaDesc = document.getElementById('novaAtualizacaoDesc').value.trim();
+    if(!novaDesc) {
+        alert('⚠️ Digite uma descrição para a atualização');
+        return;
+    }
+    const agora = new Date();
+    const dataFormatada = agora.toLocaleString('pt-BR');
+    const eventoId = document.getElementById('eventoId').value;
+    const evento = eventos.find(e => e.id == eventoId);
+    if(evento) {
+        if(!evento.historico) {
+            evento.historico = [];
+        }
+        evento.historico.push({
+            data: dataFormatada,
+            descricao: novaDesc
+        });
+        evento.descricao = novaDesc;
+        evento.dataTexto = dataFormatada;
+        salvarDados();
+        renderizarHistorico(evento);
+        document.getElementById('novaAtualizacaoDesc').value = '';
+        alert('✅ Atualização adicionada com sucesso!');
+    }
+}
+
+function editarAtualizacao(index) {
+    const eventoId = document.getElementById('eventoId').value;
+    const evento = eventos.find(e => e.id == eventoId);
+    if(evento && evento.historico && evento.historico[index]) {
+        const novaDesc = prompt("Editar descrição da atualização:", evento.historico[index].descricao);
+        if(novaDesc !== null && novaDesc.trim() !== "") {
+            evento.historico[index].descricao = novaDesc.trim();
+            salvarDados();
+            renderizarHistorico(evento);
+            alert('✅ Atualização editada com sucesso!');
+        }
+    }
+}
+
+function excluirAtualizacao(index) {
+    const eventoId = document.getElementById('eventoId').value;
+    const evento = eventos.find(e => e.id == eventoId);
+    if(evento && evento.historico && evento.historico[index]) {
+        if(confirm(`Tem certeza que deseja excluir esta atualização?\nData: ${evento.historico[index].data}\nDescrição: ${evento.historico[index].descricao}`)) {
+            evento.historico.splice(index, 1);
+            if(evento.historico.length > 0) {
+                const ultimo = evento.historico[evento.historico.length - 1];
+                evento.descricao = ultimo.descricao;
+                evento.dataTexto = ultimo.data;
+            } else {
+                evento.descricao = '';
+                evento.dataTexto = '';
+            }
+            salvarDados();
+            renderizarHistorico(evento);
+            alert('✅ Atualização excluída com sucesso!');
+        }
+    }
+}
+
+async function salvarEvento() {
+    const btnSalvar = document.getElementById('btnSalvarEvento');
+    const id = document.getElementById('eventoId').value;
+    const os = document.getElementById('eventoOS').value;
+    const desc = document.getElementById('eventoDesc').value;
+    const status = document.getElementById('eventoStatus').value;
+    const dataHoraInput = document.getElementById('eventoDataHora').value;
+    
+    if(!os || !desc) {
+        alert('⚠️ Preencha OS e Descrição');
+        return;
+    }
+    
+    const totalAnexos = existingAttachments.length + imageFiles.length;
+    if (totalAnexos > LIMITE_ANEXOS) {
+        alert('⚠️ Limite máximo de ' + LIMITE_ANEXOS + ' anexos excedido!');
+        return;
+    }
+    
+    btnSalvar.disabled = true;
+    btnSalvar.innerHTML = '⏳ Salvando...';
+    
+    try {
+        const eventData = { os: os, descricao: desc, status: status, anexos: [...existingAttachments] };
+        let dataTextoFormatada;
+        if (dataHoraInput) {
+            const d = new Date(dataHoraInput);
+            dataTextoFormatada = d.toLocaleString('pt-BR');
+        } else {
+            dataTextoFormatada = new Date().toLocaleString('pt-BR');
+        }
+        eventData.dataTexto = dataTextoFormatada;
+        
+        if (imageFiles.length > 0) {
+            const promises = imageFiles.map(function(file) {
+                return new Promise(function(resolve, reject) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) { resolve(e.target.result); };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            });
+            const anexosBase64 = await Promise.all(promises);
+            eventData.anexos = eventData.anexos.concat(anexosBase64);
+        }
+        
+        if (id) {
+            const index = eventos.findIndex(e => e.id == id);
+            if (index !== -1) {
+                eventData.id = parseInt(id);
+                eventData.historico = eventos[index].historico || [];
+                if(eventData.historico.length === 0) {
+                    eventData.historico.push({
+                        data: dataTextoFormatada,
+                        descricao: desc
+                    });
+                }
+                if(!dataHoraInput) {
+                    eventData.dataTexto = eventos[index].dataTexto;
+                }
+                eventos[index] = eventData;
+            }
+        } else {
+            eventData.id = Date.now();
+            eventData.historico = [{
+                data: dataTextoFormatada,
+                descricao: desc
+            }];
+            eventos.unshift(eventData);
+        }
+        
+        salvarDados();
+        fecharModalEvento();
+        imageFiles = [];
+        existingAttachments = [];
+        alert(id ? '✅ Evento atualizado com sucesso!' : '✅ Evento cadastrado com sucesso!');
+    } catch (error) {
+        console.error('Erro ao salvar:', error);
+        alert('❌ Erro ao salvar evento. Tente novamente.');
+    } finally {
+        btnSalvar.disabled = false;
+        btnSalvar.innerHTML = '💾 Salvar';
+    }
+}
+
+function excluirEvento(id) {
+    if(confirm('Tem certeza que deseja excluir?')) {
+        eventos = eventos.filter(e => e.id !== id);
+        salvarDados();
+    }
+}
+
+function concluirPendencia(id) {
+    if(confirm('Marcar esta pendência como concluída?')) {
+        const index = eventos.findIndex(e => e.id === id);
+        if(index !== -1) {
+            eventos[index].status = 'concluido';
+            const novaData = new Date().toLocaleString('pt-BR');
+            if(!eventos[index].historico) {
+                eventos[index].historico = [];
+            }
+            eventos[index].historico.push({
+                data: novaData,
+                descricao: "Status alterado para: Concluído"
+            });
+            eventos[index].dataTexto = novaData;
+            eventos[index].descricao = "Status alterado para: Concluído";
+            salvarDados();
+            if(statusAtualFiltro) {
+                mostrarPendenciasDetalhadas(statusAtualFiltro);
+                mostrarPendenciasDetalhadasFS(statusAtualFiltro);
+            }
+        }
+    }
+}
+
+function handleImageUpload(event) {
+    const files = Array.from(event.target.files);
+    const totalAtual = existingAttachments.length + imageFiles.length;
+    const espacoDisponivel = LIMITE_ANEXOS - totalAtual;
+    
+    if (espacoDisponivel <= 0) {
+        alert('⚠️ Limite máximo de ' + LIMITE_ANEXOS + ' anexos atingido!');
+        event.target.value = '';
+        return;
+    }
+    
+    const filesToAdd = files.slice(0, espacoDisponivel);
+    if (files.length > espacoDisponivel) {
+        alert('⚠️ Apenas ' + espacoDisponivel + ' arquivo(s) serão adicionados (limite de ' + LIMITE_ANEXOS + ')');
+    }
+    
+    const imageContainer = document.getElementById('imagePreviewContainer');
+    filesToAdd.forEach(function(file) {
+        if (!file.type.match('image.*')) {
+            alert('Por favor, selecione apenas arquivos de imagem.');
+            return;
+        }
+        imageFiles.push(file);
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imgItem = document.createElement('div');
+            imgItem.className = 'image-item';
+            imgItem.innerHTML = '<img src="' + e.target.result + '" alt="Preview"><span style="position:absolute; top:5px; left:5px; background:#28a745; color:white; padding:2px 6px; border-radius:4px; font-size:10px;">NOVA</span><button class="remove-image" onclick="removeNewImage(this, \'' + file.name.replace(/'/g, "\\'") + '\')">×</button>';
+            imageContainer.appendChild(imgItem);
+            atualizarContadorImagens();
+        };
+        reader.readAsDataURL(file);
+    });
+    event.target.value = '';
+}
+
+function removeNewImage(button, fileName) {
+    imageFiles = imageFiles.filter(function(file) { return file.name !== fileName; });
+    button.parentElement.remove();
+    atualizarContadorImagens();
+}
+
+function removeExistingImage(index) {
+    if(confirm('Deseja remover esta imagem?')) {
+        existingAttachments.splice(index, 1);
+        const imageContainer = document.getElementById('imagePreviewContainer');
+        imageContainer.innerHTML = '';
+        if (existingAttachments && existingAttachments.length > 0) {
+            existingAttachments.forEach(function(img, idx) {
+                const imgItem = document.createElement('div');
+                imgItem.className = 'image-item';
+                imgItem.innerHTML = '<img src="' + img + '" alt="Imagem ' + (idx + 1) + '"><button class="remove-image" onclick="removeExistingImage(' + idx + ')">×</button>';
+                imageContainer.appendChild(imgItem);
+            });
+        }
+        imageFiles.forEach(function(file, idx) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgItem = document.createElement('div');
+                imgItem.className = 'image-item';
+                imgItem.innerHTML = '<img src="' + e.target.result + '" alt="Preview"><span style="position:absolute; top:5px; left:5px; background:#28a745; color:white; padding:2px 6px; border-radius:4px; font-size:10px;">NOVA</span><button class="remove-image" onclick="removeNewImage(this, \'' + file.name.replace(/'/g, "\\'") + '\')">×</button>';
+                imageContainer.appendChild(imgItem);
+                atualizarContadorImagens();
+            };
+            reader.readAsDataURL(file);
+        });
+        atualizarContadorImagens();
+    }
+}
+
+function atualizarContadorImagens() {
+    const counter = document.getElementById('imageCounter');
+    const btnVisualizar = document.getElementById('btnVisualizarImagens');
+    const total = existingAttachments.length + imageFiles.length;
+    counter.textContent = total + ' de ' + LIMITE_ANEXOS + ' imagem(ns) anexada(s)';
+    btnVisualizar.style.display = total > 0 ? 'inline-flex' : 'none';
+}
+
+function visualizarImagens() {
+    const total = existingAttachments.length + imageFiles.length;
+    if (total === 0) {
+        alert('Nenhuma imagem para visualizar');
+        return;
+    }
+    const container = document.getElementById('imageVisualizarContainer');
+    container.innerHTML = '';
+    existingAttachments.forEach(function(imgBase64, index) {
+        const imgItem = document.createElement('div');
+        imgItem.className = 'image-item';
+        imgItem.style.cursor = 'pointer';
+        imgItem.innerHTML = '<img src="' + imgBase64 + '" alt="Imagem ' + (index + 1) + '" style="height: 200px;"><div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); color: white; padding: 5px; text-align: center; font-size: 12px;">Imagem ' + (index + 1) + ' de ' + total + '</div>';
+        container.appendChild(imgItem);
+    });
+    imageFiles.forEach(function(file, index) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imgItem = document.createElement('div');
+            imgItem.className = 'image-item';
+            imgItem.style.cursor = 'pointer';
+            imgItem.innerHTML = '<img src="' + e.target.result + '" alt="Imagem ' + (existingAttachments.length + index + 1) + '" style="height: 200px;"><div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); color: white; padding: 5px; text-align: center; font-size: 12px;">Imagem ' + (existingAttachments.length + index + 1) + ' de ' + total + ' (NOVA)</div>';
+            container.appendChild(imgItem);
+        };
+        reader.readAsDataURL(file);
+    });
+    document.getElementById('modalVisualizarImagens').classList.add('show');
+}
+
+function fecharModalVisualizarImagens() {
+    document.getElementById('modalVisualizarImagens').classList.remove('show');
+}
+
+function abrirModalPendencias() {
+    renderizarCardsPendencias();
+    document.getElementById('pendenciasDetalhadasFS').classList.remove('show');
+    document.getElementById('modalPendencias').classList.add('show');
+}
+
+function fecharModalPendencias() {
+    document.getElementById('modalPendencias').classList.remove('show');
+}
+
+document.getElementById('modalPendencias').addEventListener('click', function(e) {
+    if(e.target === this) {
+        fecharModalPendencias();
+    }
+});
+
+function formatarData(dataISO) {
+    if(!dataISO) return '-';
+    const partes = dataISO.split('-');
+    if(partes.length === 3) {
+        return partes[2] + '/' + partes[1] + '/' + partes[0];
+    }
+    return dataISO;
+}
+
+function fazerBackup() {
+    const dados = { eventos: eventos, comissoes: comissoes, modelos: modelos, statusConfig: statusConfig, dataBackup: new Date().toISOString() };
+    const dadosStr = JSON.stringify(dados, null, 2);
+    const blob = new Blob([dadosStr], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'backup_completo_' + new Date().toISOString().slice(0,10) + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    alert('✅ Backup realizado com sucesso!\nDados salvos:\n- Eventos da Agenda\n- Comissões\n- Modelos Cadastrados\n- Configurações de Situações\n- Data: ' + new Date().toLocaleString('pt-BR'));
+}
+
+function restaurarBackup(input) {
+    const file = input.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const dados = JSON.parse(e.target.result);
+            if(dados.eventos && Array.isArray(dados.eventos)) { eventos = dados.eventos; }
+            if(dados.comissoes && Array.isArray(dados.comissoes)) { comissoes = dados.comissoes; }
+            if(dados.modelos && Array.isArray(dados.modelos)) { modelos = dados.modelos; }
+            if(dados.statusConfig) { statusConfig = dados.statusConfig; }
+            salvarDados();
+            salvarDadosComissao();
+            salvarDadosModelos();
+            salvarStatusConfig();
+            alert('✅ Backup restaurado com sucesso!');
+        } catch(err) {
+            alert('Erro ao ler arquivo: ' + err.message);
+        }
+    };
+    reader.readAsText(file);
+    input.value = '';
+}
+
+/* ============================================ */
+/* FUNÇÃO IMPRIMIR COMPROVANTE - CORRIGIDA ✅ */
+/* ============================================ */
+function imprimirComprovanteAgenda(idEvento) {
+    const ev = eventos.find(e => e.id === idEvento);
+    if(!ev) {
+        alert('⚠️ Evento não encontrado!');
+        return;
+    }
+    const config = statusConfig[ev.status] || { cor: '#667eea', nome: ev.status };
+    
+    // ✅ CORREÇÃO: Usar printAreaAgenda em vez de printArea
+    const printArea = document.getElementById('printAreaAgenda');
+    const dataAtual = new Date();
+    
+    document.getElementById('printAgendaTitulo').textContent = '📅 Comprovante de Agenda';
+    document.getElementById('printAgendaSubtitulo').textContent = 'Cidade Soluções - Técnico Vanderson Canedo';
+    document.getElementById('printAgendaOS').textContent = ev.os || '-';
+    document.getElementById('printAgendaDataHora').textContent = ev.dataTexto || '-';
+    document.getElementById('printAgendaStatus').textContent = config.nome;
+    document.getElementById('printAgendaEmissao').textContent = dataAtual.toLocaleDateString('pt-BR');
+    document.getElementById('printAgendaDescricao').textContent = ev.descricao || '-';
+    document.getElementById('printAgendaFooterData').textContent = dataAtual.toLocaleString('pt-BR');
+    
+    // Adicionar histórico se existir
+    if(ev.historico && ev.historico.length > 0) {
+        const historicoContainer = document.getElementById('printHistoricoContainer');
+        const historicoLista = document.getElementById('printHistoricoLista');
+        historicoContainer.style.display = 'block';
+        historicoLista.innerHTML = '';
+        ev.historico.forEach((hist, index) => {
+            const histItem = document.createElement('div');
+            histItem.className = 'print-historico-item';
+            histItem.innerHTML = `
+                <div class="print-historico-date">${index + 1}º Registro - ${hist.data}</div>
+                <div class="print-historico-text">${hist.descricao}</div>
+            `;
+            historicoLista.appendChild(histItem);
+        });
+    } else {
+        document.getElementById('printHistoricoContainer').style.display = 'none';
+    }
+    
+    printArea.classList.add('show');
+    window.print();
+    printArea.classList.remove('show');
+}
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"75124c326cb447fe934cde04713ae013","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"75124c326cb447fe934cde04713ae013","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
