@@ -1682,7 +1682,58 @@ const servicosConfigPadrao = {
 };
 let servicosConfig = {};
 
-document.addEventListener('DOMContentLoaded', function() {
+async function carregarSnapshotOnline() {
+    try {
+        const response = await fetch('/api/snapshot', { cache: 'no-store' });
+        if (!response.ok) throw new Error('Falha ao carregar snapshot');
+        const payload = await response.json();
+        const data = payload && payload.data;
+        if (!data) return false;
+        if (Array.isArray(data.eventos)) localStorage.setItem('agendaEventosData', JSON.stringify(data.eventos));
+        if (Array.isArray(data.comissoes)) localStorage.setItem('agendaComissaoData', JSON.stringify(data.comissoes));
+        if (Array.isArray(data.modelos)) localStorage.setItem('agendaModelosData', JSON.stringify(data.modelos));
+        if (data.statusConfig) localStorage.setItem('agendaStatusConfigData', JSON.stringify(data.statusConfig));
+        if (data.categoriasConfig) localStorage.setItem('agendaCategoriasConfigData', JSON.stringify(data.categoriasConfig));
+        if (data.servicosConfig) localStorage.setItem('agendaServicosConfigData', JSON.stringify(data.servicosConfig));
+        window.__minhaComissaoOnline = true;
+        return true;
+    } catch (error) {
+        console.warn('Sincronização online indisponível; usando dados locais.', error);
+        return false;
+    }
+}
+
+let sincronizacaoPendente = null;
+function obterSnapshotAtual() {
+    return {
+        eventos: eventos,
+        comissoes: comissoes,
+        modelos: modelos,
+        statusConfig: statusConfig,
+        categoriasConfig: categoriasConfig,
+        servicosConfig: servicosConfig,
+        dataBackup: new Date().toISOString()
+    };
+}
+function sincronizarSnapshotOnline() {
+    if (sincronizacaoPendente) clearTimeout(sincronizacaoPendente);
+    sincronizacaoPendente = setTimeout(async function() {
+        try {
+            const response = await fetch('/api/snapshot', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(obterSnapshotAtual())
+            });
+            if (!response.ok) throw new Error('Falha ao salvar snapshot');
+            window.__minhaComissaoOnline = true;
+        } catch (error) {
+            console.warn('Não foi possível sincronizar agora; a cópia local foi mantida.', error);
+        }
+    }, 250);
+}
+
+document.addEventListener('DOMContentLoaded', async function() {
+    await carregarSnapshotOnline();
     carregarDados();
     carregarCategoriasConfig();
     carregarServicosConfig();
@@ -1734,6 +1785,7 @@ function carregarStatusConfig() {
 
 function salvarStatusConfig() {
     localStorage.setItem('agendaStatusConfigData', JSON.stringify(statusConfig));
+    sincronizarSnapshotOnline();
     renderizarCheckboxesStatus();
     renderizarSelectStatus();
     renderizarCardsPendencias();
@@ -1772,6 +1824,7 @@ function carregarCategoriasConfig() {
 
 function salvarCategoriasConfig() {
     localStorage.setItem('agendaCategoriasConfigData', JSON.stringify(categoriasConfig));
+    sincronizarSnapshotOnline();
 }
 
 function normalizarChaveCategoria(nome) {
@@ -1902,6 +1955,7 @@ function excluirCategoria(chave) {
 
 function salvarServicosConfig() {
     localStorage.setItem('agendaServicosConfigData', JSON.stringify(servicosConfig));
+    sincronizarSnapshotOnline();
     renderizarComissoes();
 }
 
@@ -2105,18 +2159,21 @@ function carregarDados() {
 
 function salvarDados() {
     localStorage.setItem('agendaEventosData', JSON.stringify(eventos));
+    sincronizarSnapshotOnline();
     renderizarEventos();
     renderizarCardsPendencias();
 }
 
 function salvarDadosComissao() {
     localStorage.setItem('agendaComissaoData', JSON.stringify(comissoes));
+    sincronizarSnapshotOnline();
     renderizarComissoes();
     atualizarResumoComissao();
 }
 
 function salvarDadosModelos() {
     localStorage.setItem('agendaModelosData', JSON.stringify(modelos));
+    sincronizarSnapshotOnline();
     renderizarModelos();
 }
 
